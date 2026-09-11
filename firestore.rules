@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /guestbook/{entryId} {
+      // 누구나 방명록을 읽을 수 있습니다.
+      allow read: true;
+
+      // 작성: name, password(해시), message, createdAt 필드만 허용하고 길이를 제한합니다.
+      allow create: if request.resource.data.keys().hasOnly(['name', 'password', 'message', 'createdAt'])
+                    && request.resource.data.name is string
+                    && request.resource.data.name.size() > 0
+                    && request.resource.data.name.size() <= 20
+                    && request.resource.data.password is string
+                    && request.resource.data.password.size() == 64 // sha-256 hex
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() > 0
+                    && request.resource.data.message.size() <= 300;
+
+      // 수정은 막고, 삭제는 클라이언트에서 비밀번호 해시를 확인한 뒤에만 요청합니다.
+      // (Firestore 규칙만으로는 삭제 요청에 비밀번호를 실어 서버 검증할 수 없으므로,
+      //  더 강한 보안이 필요하면 Cloud Functions callable로 옮기는 것을 권장합니다.)
+      allow update: false;
+      allow delete: true;
+    }
+  }
+}
