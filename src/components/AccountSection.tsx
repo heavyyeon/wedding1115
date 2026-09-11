@@ -36,7 +36,7 @@ function AccountRow({ entry }: { entry: AccountEntry }) {
             복사
           </button>
           {entry.kakaopayLink && (
-            
+            <a
               href={entry.kakaopayLink}
               target="_blank"
               rel="noopener noreferrer"
