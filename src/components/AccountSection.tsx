@@ -54,7 +54,7 @@ function AccountCard({ account }: { account: AccountRow }) {
 
 export default function AccountSection() {
   return (
-    <section className="bg-accent px-6 py-20 text-neutral-900">
+    <section className="bg-white px-6 py-20 text-neutral-900">
       <Reveal className="mb-8 text-center">
         <p className="font-serif text-xs tracking-[0.3em] text-neutral-800/70">
           FOR YOUR HEART
