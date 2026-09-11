@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { gallery } from "@/data/wedding";
 import Reveal from "@/components/Reveal";
 
@@ -20,21 +19,22 @@ export default function GallerySection() {
     setActiveIndex((i) => (i === null ? null : (i + 1) % photos.length));
 
   return (
-    <section className="py-20">
-      <Reveal className="grid grid-cols-3 gap-0">
+    <section className="pb-20">
+      {/* 3열, 사진 자체의 원래 세로 비율 그대로 (잘리지 않고 가능한 한 길게 보이도록 masonry 형태) */}
+      <Reveal className="columns-3 gap-0">
         {photos.map((src, i) => (
           <button
             key={src}
             type="button"
             onClick={() => setActiveIndex(i)}
-            className="relative aspect-[4/5] overflow-hidden bg-white/50"
+            className="block w-full break-inside-avoid overflow-hidden"
           >
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={src}
               alt={`갤러리 사진 ${i + 1}`}
-              fill
-              sizes="160px"
-              className="object-cover transition duration-300 active:scale-95"
+              loading="lazy"
+              className="block w-full h-auto align-top transition duration-300 active:scale-95"
             />
           </button>
         ))}
@@ -46,15 +46,14 @@ export default function GallerySection() {
           onClick={close}
         >
           <div
-            className="relative aspect-[4/5] w-full max-w-[380px]"
+            className="relative flex max-h-[80vh] w-full max-w-[420px] items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={photos[activeIndex]}
               alt={`갤러리 사진 ${activeIndex + 1}`}
-              fill
-              sizes="380px"
-              className="object-contain"
+              className="max-h-[80vh] w-auto max-w-full object-contain"
             />
           </div>
 
