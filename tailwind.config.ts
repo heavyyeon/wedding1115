@@ -8,7 +8,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        base: "#fFFFFF", // 기본 배경 (화이트)
+        base: "#ffffff", // 기본 배경 (화이트)
         accent: "#a8d96c", // 강조 섹션 배경 (WhenWhere, Account)
         paper: "#ffffff", // 흰 배경 섹션 (Invitation)
       },
