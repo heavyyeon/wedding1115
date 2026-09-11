@@ -62,17 +62,17 @@ export const accounts = {
   groomSide: {
     label: "신랑측",
     people: [
-      { name: "신랑", holder: "[김진우]", bank: "[국민은행]", number: "[524902-01-383604]" },
-      { name: "신랑 아버지", holder: "[김동규]", bank: "[은행명]", number: "[계좌번호]" },
-      { name: "신랑 어머니", holder: "[홍선화]", bank: "[은행명]", number: "[계좌번호]" },
+      { name: "신랑", holder: "[예금주 이름]", bank: "[은행명]", number: "[계좌번호]" },
+      { name: "신랑 아버지", holder: "[예금주 이름]", bank: "[은행명]", number: "[계좌번호]" },
+      { name: "신랑 어머니", holder: "[예금주 이름]", bank: "[은행명]", number: "[계좌번호]" },
     ] as AccountEntry[],
   },
   brideSide: {
     label: "신부측",
     people: [
-      { name: "신부", holder: "[김수연]", bank: "[우리은행]", number: "[1002-957-717267]" },
-      { name: "신부 아버지", holder: "[김종화]", bank: "[은행명]", number: "[계좌번호]" },
-      { name: "신부 어머니", holder: "[구윤정]", bank: "[우리은행]", number: "[1002-753-858974]" },
+      { name: "신부", holder: "[예금주 이름]", bank: "[은행명]", number: "[계좌번호]" },
+      { name: "신부 아버지", holder: "[예금주 이름]", bank: "[은행명]", number: "[계좌번호]" },
+      { name: "신부 어머니", holder: "[예금주 이름]", bank: "[은행명]", number: "[계좌번호]" },
     ] as AccountEntry[],
   },
 };
