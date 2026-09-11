@@ -26,19 +26,19 @@ export default function GallerySection() {
         <p className="mt-2 font-serif text-lg text-neutral-700">우리의 순간들</p>
       </Reveal>
 
-      <Reveal className="grid grid-cols-3 gap-1.5">
+      <Reveal className="grid grid-cols-2 gap-0">
         {photos.map((src, i) => (
           <button
             key={src}
             type="button"
             onClick={() => setActiveIndex(i)}
-            className="relative aspect-square overflow-hidden rounded-md bg-white/50"
+            className="relative aspect-[4/5] overflow-hidden bg-white/50"
           >
             <Image
               src={src}
               alt={`갤러리 사진 ${i + 1}`}
               fill
-              sizes="160px"
+              sizes="240px"
               className="object-cover transition duration-300 active:scale-95"
             />
           </button>
@@ -51,7 +51,7 @@ export default function GallerySection() {
           onClick={close}
         >
           <div
-            className="relative aspect-[3/4] w-full max-w-[380px]"
+            className="relative aspect-[4/5] w-full max-w-[380px]"
             onClick={(e) => e.stopPropagation()}
           >
             <Image
