@@ -41,11 +41,12 @@ export default function WhenWhereSection() {
           <p className="font-mono text-xl tracking-wider text-neutral-900">
             {wedding.year}.{pad2(wedding.month)}.{pad2(wedding.day)}
           </p>
-          <p className="mt-1 text-sm text-neutral-500">
+                   <p className="mt-1 text-sm text-neutral-500">
             {wedding.dayOfWeekLabel} {wedding.hour < 12 ? "오전" : "오후"}{" "}
             {wedding.hour > 12 ? wedding.hour - 12 : wedding.hour}시{" "}
             {wedding.minute === 0 ? "" : `${wedding.minute}분`}
           </p>
+          <p className="mt-1 text-sm text-neutral-400">{wedding.venueName}</p>
         </div>
 
         <div className="h-px w-full bg-neutral-200" />
