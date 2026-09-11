@@ -46,19 +46,34 @@ export const invitationText = `서로 다른 길을 걸어온 두 사람이
 오셔서 저희의 새로운 시작을
 따뜻한 마음으로 축복해 주시면 감사하겠습니다.`;
 
+export type AccountEntry = {
+  name: string; // 카드 제목 (예: "신랑", "신랑 아버지")
+  holder: string; // 예금주 이름
+  bank: string; // 은행명
+  number: string; // 계좌번호
+  // 카카오페이 송금 링크가 있으면 채워주세요 (카카오페이 앱 > 송금 > 계좌 등록 후 "송금 요청" 링크 복사).
+  // 비워두면 화면에 "pay" 버튼이 표시되지 않습니다.
+  kakaopayLink?: string;
+};
+
+// [ ] 로 표시된 값은 실제 정보로 교체해주세요. 부모님 계좌가 없으면 해당 항목을 배열에서
+// 통째로 지워도 됩니다 (예: 신랑 아버지 계좌가 없으면 아래 배열에서 그 객체만 삭제).
 export const accounts = {
   groomSide: {
     label: "신랑측",
-    // [이름] / [은행명] / [번호] — 실제 계좌 정보로 교체해주세요.
-    holder: "[예금주 이름]",
-    bank: "[은행명]",
-    number: "[계좌번호]",
+    people: [
+      { name: "신랑", holder: "[김진우]", bank: "[국민은행]", number: "[524902-01-383604]" },
+      { name: "신랑 아버지", holder: "[김동규]", bank: "[은행명]", number: "[계좌번호]" },
+      { name: "신랑 어머니", holder: "[홍선화]", bank: "[은행명]", number: "[계좌번호]" },
+    ] as AccountEntry[],
   },
   brideSide: {
     label: "신부측",
-    holder: "[예금주 이름]",
-    bank: "[은행명]",
-    number: "[계좌번호]",
+    people: [
+      { name: "신부", holder: "[김수연]", bank: "[우리은행]", number: "[1002-957-717267]" },
+      { name: "신부 아버지", holder: "[김종화]", bank: "[은행명]", number: "[계좌번호]" },
+      { name: "신부 어머니", holder: "[구윤정]", bank: "[우리은행]", number: "[1002-753-858974]" },
+    ] as AccountEntry[],
   },
 };
 
