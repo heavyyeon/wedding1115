@@ -36,7 +36,7 @@ function AccountRow({ entry }: { entry: AccountEntry }) {
             복사
           </button>
           {entry.kakaopayLink && (
-            <a
+            
               href={entry.kakaopayLink}
               target="_blank"
               rel="noopener noreferrer"
@@ -52,7 +52,7 @@ function AccountRow({ entry }: { entry: AccountEntry }) {
 }
 
 function AccountGroup({ label, people }: { label: string; people: AccountEntry[] }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="rounded-xl border border-neutral-100 bg-white p-4 shadow-sm">
