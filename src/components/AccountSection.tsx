@@ -1,19 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { accounts } from "@/data/wedding";
+import { accounts, type AccountEntry } from "@/data/wedding";
 import { useToast } from "@/context/ToastContext";
 import Reveal from "@/components/Reveal";
 
-type AccountRow = (typeof accounts)[keyof typeof accounts];
-
-function AccountCard({ account }: { account: AccountRow }) {
+function AccountRow({ entry }: { entry: AccountEntry }) {
   const { showToast } = useToast();
-  const [open, setOpen] = useState(false);
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(`${account.bank} ${account.number}`);
+      await navigator.clipboard.writeText(`${entry.bank} ${entry.number}`);
       showToast("계좌번호가 복사되었어요");
     } catch {
       showToast("복사에 실패했어요");
@@ -21,33 +18,60 @@ function AccountCard({ account }: { account: AccountRow }) {
   };
 
   return (
-    <div className="rounded-xl bg-white/80 p-4 shadow-sm">
+    <div className="border-t border-neutral-100 py-4 first:border-t-0">
+      <p className="text-sm font-semibold text-neutral-800">{entry.name}</p>
+      <div className="mt-2 flex items-center justify-between gap-3">
+        <div>
+          <p className="text-sm text-neutral-700">{entry.number}</p>
+          <p className="text-xs text-neutral-400">
+            {entry.bank} {entry.holder}
+          </p>
+        </div>
+        <div className="flex flex-shrink-0 items-center gap-1.5">
+          <button
+            type="button"
+            onClick={copy}
+            className="rounded-md border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-700 active:scale-95"
+          >
+            복사
+          </button>
+          {entry.kakaopayLink && (
+            
+              href={entry.kakaopayLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md bg-[#fee500] px-3 py-1.5 text-xs font-medium text-neutral-900 active:scale-95"
+            >
+              pay
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AccountGroup({ label, people }: { label: string; people: AccountEntry[] }) {
+  const [open, setOpen] = useState(true);
+
+  return (
+    <div className="rounded-xl border border-neutral-100 bg-white p-4 shadow-sm">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center justify-between text-sm font-medium text-neutral-800"
       >
-        {account.label}
-        <span className="text-xs text-neutral-400">{open ? "접기" : "펼치기"}</span>
+        {label}
+        <span
+          className={`text-xs text-neutral-400 transition-transform ${open ? "rotate-180" : ""}`}
+        >
+          ▾
+        </span>
       </button>
 
-      {open && (
-        <div className="mt-3 flex items-center justify-between border-t border-neutral-100 pt-3">
-          <div>
-            <p className="text-sm text-neutral-700">
-              {account.bank} {account.number}
-            </p>
-            <p className="text-xs text-neutral-400">{account.holder}</p>
-          </div>
-          <button
-            type="button"
-            onClick={copy}
-            className="rounded-full border border-neutral-800/20 px-3 py-1.5 text-xs font-medium text-neutral-800"
-          >
-            복사
-          </button>
-        </div>
-      )}
+      {open && <div className="mt-1">{people.map((entry) => (
+        <AccountRow key={entry.name} entry={entry} />
+      ))}</div>}
     </div>
   );
 }
@@ -63,8 +87,8 @@ export default function AccountSection() {
       </Reveal>
 
       <Reveal className="flex flex-col gap-3">
-        <AccountCard account={accounts.groomSide} />
-        <AccountCard account={accounts.brideSide} />
+        <AccountGroup label={accounts.groomSide.label} people={accounts.groomSide.people} />
+        <AccountGroup label={accounts.brideSide.label} people={accounts.brideSide.people} />
       </Reveal>
     </section>
   );
