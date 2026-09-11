@@ -62,12 +62,45 @@ export const accounts = {
   },
 };
 
+export type SubwayInfo = { line: string; color: string; desc: string };
+export type BusInfo = { type: string; numbers: string };
+
 export const directions = {
-  bus: "[버스 노선 안내를 입력해주세요. 예: OO번, OO번 승차 후 'OO정류장' 하차]",
-  subway: "[지하철 안내를 입력해주세요. 예: O호선 OO역 O번 출구에서 도보 O분]",
+  tel: "[전화번호를 입력해주세요. 예: 02-000-0000]",
+
+  // "네이버지도/티맵/카카오내비" 버튼이 앱을 열 때 쓰는 좌표입니다 (지도를 화면에 그리진 않고, 버튼용으로만 씁니다).
+  // 아래 순서로 정확한 값을 구할 수 있어요:
+  // 1) map.naver.com 에서 "공군호텔"(또는 정확한 건물명)을 검색
+  // 2) 지도 위 핀을 마우스 오른쪽 클릭 → "이 위치 좌표 복사" 선택
+  // 3) 복사된 위도(lat), 경도(lng) 값을 아래에 붙여넣기
+  // ⚠️ 지금 들어있는 값은 정확한 좌표가 아닌 자리표시자이니 꼭 실제 값으로 교체해주세요.
+  coords: {
+    lat: 37.5, // [위도 — 교체 필요]
+    lng: 126.92, // [경도 — 교체 필요]
+  },
+
+  // 지도 위치를 보여주는 정적 이미지입니다 (움직이는 지도가 아니라, 네이버지도/카카오맵에서
+  // 위치를 캡처한 스크린샷을 그대로 사진처럼 넣는 방식 — API 키가 필요 없어요).
+  mapImage: "/map-preview.jpg",
+
+  // "약도 이미지 보기" 버튼을 누르면 뜨는 손그림/캡처 약도 이미지
+  mapGuideImage: "/map-guide.jpg",
+
+  // 지하철 안내 목록 (원하는 만큼 추가/삭제 가능)
+  subway: [
+    { line: "[호선]", color: "#a8d96c", desc: "[역 이름 O번 출구]" },
+  ] as SubwayInfo[],
+  subwayWalk: "[출구에서부터의 도보 안내를 입력해주세요. 예: 좌측 방향 500m 도보 후 좌측 건물]",
+
+  // 버스 안내 목록 (원하는 만큼 추가/삭제 가능)
+  bus: [
+    { type: "간선버스", numbers: "[번호를 입력해주세요]" },
+    { type: "지선버스", numbers: "[번호를 입력해주세요]" },
+  ] as BusInfo[],
+  busShuttle: "", // 셔틀버스 안내가 있다면 입력 (없으면 빈 문자열로 두면 화면에 표시되지 않습니다)
+
+  // 자가용 안내
   car: "[자가용 안내 / 주차 안내를 입력해주세요. 예: 내비게이션에 '공군호텔' 검색, 지하주차장 2시간 무료]",
-  mapUrl: "https://map.kakao.com/", // 카카오맵 또는 네이버지도 공유 링크로 교체해주세요.
-  mapButtonLabel: "지도에서 보기",
 };
 
 // Kakao 공유(OG) 관련 텍스트. layout.tsx 의 메타데이터에서 사용됩니다.
@@ -78,9 +111,9 @@ export const ogMeta = {
 };
 
 export const gallery = {
-  count: 22,
+  count: 15,
   basePath: "/gallery",
-  extension: "jpg",
+  extension: "png",
 };
 
 export const bgm = {

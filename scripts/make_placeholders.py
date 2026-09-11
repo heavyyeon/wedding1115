@@ -32,13 +32,18 @@ def placeholder(path, size, label, bg=BG, fg=TEXT):
     draw.text(
         ((size[0] - w) / 2, (size[1] - h) / 2 - bbox[1]), label, font=f, fill=fg
     )
-    img.save(path, quality=88)
+    if str(path).lower().endswith((".jpg", ".jpeg")):
+        img.save(path, quality=88)
+    else:
+        img.save(path)
 
 
 placeholder(os.path.join(BASE, "main-photo.jpg"), (960, 1600), "MAIN PHOTO\n(교체 필요)")
 placeholder(os.path.join(BASE, "groom.jpg"), (600, 800), "GROOM")
 placeholder(os.path.join(BASE, "bride.jpg"), (600, 800), "BRIDE")
 placeholder(os.path.join(BASE, "kakao.jpg"), (800, 400), "KAKAO OG IMAGE")
+placeholder(os.path.join(BASE, "map-guide.jpg"), (900, 1200), "MAP GUIDE\n(약도 이미지, 교체 필요)")
+placeholder(os.path.join(BASE, "map-preview.jpg"), (960, 640), "MAP PREVIEW\n(지도 스크린샷, 교체 필요)")
 
 # invitation.png: 투명 배경 + 얇은 텍스트 (손글씨 이미지 자리표시자)
 inv = Image.new("RGBA", (600, 240), (0, 0, 0, 0))
@@ -47,9 +52,9 @@ f = font(40)
 d.text((30, 90), "Invitation", font=f, fill=(90, 100, 80, 255))
 inv.save(os.path.join(BASE, "invitation.png"))
 
-for i in range(1, 23):
+for i in range(1, 16):
     placeholder(
-        os.path.join(BASE, "gallery", f"{i}.jpg"),
+        os.path.join(BASE, "gallery", f"{i}.png"),
         (600, 600),
         f"GALLERY {i}",
     )

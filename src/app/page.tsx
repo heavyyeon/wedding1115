@@ -1,6 +1,4 @@
-import IntroAnimation from "@/components/IntroAnimation";
 import TitleCard from "@/components/TitleCard";
-import CastingSection from "@/components/CastingSection";
 import InvitationSection from "@/components/InvitationSection";
 import WhenWhereSection from "@/components/WhenWhereSection";
 import GallerySection from "@/components/GallerySection";
@@ -11,9 +9,7 @@ import AccountSection from "@/components/AccountSection";
 export default function HomePage() {
   return (
     <>
-      <IntroAnimation />
       <TitleCard />
-      <CastingSection />
       <InvitationSection />
       <WhenWhereSection />
       <GallerySection />

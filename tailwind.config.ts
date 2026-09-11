@@ -25,20 +25,9 @@ const config: Config = {
           "0%": { opacity: "0", transform: "translateY(24px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
-        petalFall: {
-          "0%": { transform: "translateY(-10vh) rotate(0deg)", opacity: "0" },
-          "10%": { opacity: "1" },
-          "100%": { transform: "translateY(110vh) rotate(360deg)", opacity: "0" },
-        },
-        ribbonReveal: {
-          "0%": { transform: "scaleX(0)", opacity: "0" },
-          "100%": { transform: "scaleX(1)", opacity: "1" },
-        },
       },
       animation: {
         fadeInUp: "fadeInUp 0.9s ease-out forwards",
-        petalFall: "petalFall linear forwards",
-        ribbonReveal: "ribbonReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards",
       },
     },
   },
