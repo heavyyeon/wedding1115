@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { gallery } from "@/data/wedding";
 import Reveal from "@/components/Reveal";
 
@@ -20,21 +21,20 @@ export default function GallerySection() {
 
   return (
     <section className="pb-20">
-      {/* 3열, 사진 자체의 원래 세로 비율 그대로 (잘리지 않고 가능한 한 길게 보이도록 masonry 형태) */}
-      <Reveal className="columns-3 gap-0">
+      <Reveal className="grid grid-cols-3 gap-0">
         {photos.map((src, i) => (
           <button
             key={src}
             type="button"
             onClick={() => setActiveIndex(i)}
-            className="block w-full break-inside-avoid overflow-hidden"
+            className="relative aspect-[3/4] overflow-hidden bg-white/50"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={src}
               alt={`갤러리 사진 ${i + 1}`}
-              loading="lazy"
-              className="block w-full h-auto align-top transition duration-300 active:scale-95"
+              fill
+              sizes="160px"
+              className="object-cover transition duration-300 active:scale-95"
             />
           </button>
         ))}
@@ -79,6 +79,3 @@ export default function GallerySection() {
           </button>
         </div>
       )}
-    </section>
-  );
-}
