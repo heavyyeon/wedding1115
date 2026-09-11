@@ -20,13 +20,8 @@ export default function GallerySection() {
     setActiveIndex((i) => (i === null ? null : (i + 1) % photos.length));
 
   return (
-    <section className="px-6 py-20">
-      <Reveal className="mb-8 text-center">
-        <p className="font-serif text-xs tracking-[0.3em] text-neutral-400">GALLERY</p>
-        <p className="mt-2 font-serif text-lg text-neutral-700">우리의 순간들</p>
-      </Reveal>
-
-      <Reveal className="grid grid-cols-2 gap-0">
+    <section className="py-20">
+      <Reveal className="grid grid-cols-3 gap-0">
         {photos.map((src, i) => (
           <button
             key={src}
@@ -38,7 +33,7 @@ export default function GallerySection() {
               src={src}
               alt={`갤러리 사진 ${i + 1}`}
               fill
-              sizes="240px"
+              sizes="160px"
               className="object-cover transition duration-300 active:scale-95"
             />
           </button>
