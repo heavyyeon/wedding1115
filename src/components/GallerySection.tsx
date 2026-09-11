@@ -21,6 +21,13 @@ export default function GallerySection() {
 
   return (
     <section className="pb-20">
+      {/*
+        CSS columns(masonry)는 사진을 세로로 먼저 쌓고 그다음 열로 넘어가는 방식이라
+        1,2,3번이 화면상 순서와 어긋나 보이고, 사진 높이가 제각각이면 열 사이에 큰
+        공백이 생길 수 있습니다. 그래서 순서가 항상 왼쪽→오른쪽, 위→아래로 유지되고
+        빈 공간도 생기지 않는 grid(고정 칸) 방식으로 되돌리고, 대신 칸을 세로로 더
+        길게(aspect-[3/4]) 잡아 사진이 작아 보이지 않도록 했습니다.
+      */}
       <Reveal className="grid grid-cols-3 gap-0">
         {photos.map((src, i) => (
           <button
@@ -79,3 +86,6 @@ export default function GallerySection() {
           </button>
         </div>
       )}
+    </section>
+  );
+}
