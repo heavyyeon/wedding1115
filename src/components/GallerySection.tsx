@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { gallery } from "@/data/wedding";
 import Reveal from "@/components/Reveal";
+
+// 스와이프로 인정할 최소 이동 거리(px). 너무 작으면 탭(닫기)과 헷갈릴 수 있어 여유를 둡니다.
+const SWIPE_THRESHOLD = 40;
 
 const photos = Array.from(
   { length: gallery.count },
@@ -12,12 +15,28 @@ const photos = Array.from(
 
 export default function GallerySection() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const touchStartX = useRef<number | null>(null);
 
   const close = () => setActiveIndex(null);
   const showPrev = () =>
     setActiveIndex((i) => (i === null ? null : (i - 1 + photos.length) % photos.length));
   const showNext = () =>
     setActiveIndex((i) => (i === null ? null : (i + 1) % photos.length));
+
+  // 사진 위에서 왼쪽/오른쪽으로 스와이프하면 이전/다음 사진으로 넘어갑니다.
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (deltaX <= -SWIPE_THRESHOLD) {
+      showNext(); // 왼쪽으로 스와이프 → 다음 사진
+    } else if (deltaX >= SWIPE_THRESHOLD) {
+      showPrev(); // 오른쪽으로 스와이프 → 이전 사진
+    }
+  };
 
   return (
     <section className="pb-20">
@@ -53,14 +72,17 @@ export default function GallerySection() {
           onClick={close}
         >
           <div
-            className="relative flex max-h-[80vh] w-full max-w-[420px] items-center justify-center"
+            className="relative flex max-h-[80vh] w-full max-w-[420px] touch-pan-y items-center justify-center select-none"
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={photos[activeIndex]}
               alt={`갤러리 사진 ${activeIndex + 1}`}
               className="max-h-[80vh] w-auto max-w-full object-contain"
+              draggable={false}
             />
           </div>
 
