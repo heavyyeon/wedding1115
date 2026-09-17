@@ -6,9 +6,10 @@ import { gallery } from "@/data/wedding";
 import Reveal from "@/components/Reveal";
 
 // 스와이프로 인정할 최소 이동 거리(px). 값을 낮출수록 조금만 밀어도 바로 넘어갑니다.
-const SWIPE_THRESHOLD = 30;
-// 손을 뗀 뒤 다음/이전 사진으로 착 붙는 애니메이션 시간(ms). 짧을수록 빠릿하게 느껴집니다.
-const SNAP_DURATION_MS = 150;
+const SWIPE_THRESHOLD = 20;
+// 손을 뗀 뒤 다음/이전 사진으로 넘어가는 애니메이션 시간(ms). 0으로 두면 별도의 슬라이드
+// 모션 없이 손을 떼는 즉시 다음 사진으로 바뀝니다(가장 빠르게 느껴지는 설정).
+const SNAP_DURATION_MS = 0;
 
 const photos = Array.from(
   { length: gallery.count },
