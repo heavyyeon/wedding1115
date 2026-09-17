@@ -7,9 +7,13 @@ import Reveal from "@/components/Reveal";
 
 // 스와이프로 인정할 최소 이동 거리(px). 값을 낮출수록 조금만 밀어도 바로 넘어갑니다.
 const SWIPE_THRESHOLD = 20;
-// 손을 뗀 뒤 다음/이전 사진으로 넘어가는 애니메이션 시간(ms). 0으로 두면 별도의 슬라이드
-// 모션 없이 손을 떼는 즉시 다음 사진으로 바뀝니다(가장 빠르게 느껴지는 설정).
-const SNAP_DURATION_MS = 0;
+// 다음/이전 사진으로 슬라이드되는 애니메이션 시간(ms). 나가는 동작과 들어오는 동작 각각에
+// 적용되므로 실제 체감 시간은 이 값의 약 2배입니다. 너무 0에 가까우면 오히려 뚝 끊기는
+// 느낌이 나서, 빠르면서도 "슬라이드"로 보이는 값으로 맞췄습니다.
+const ANIM_MS = 130;
+// 사진이 화면 밖으로 완전히 나갔다고 볼 수 있는 이동 거리(px). 카드 최대 폭(420px)보다
+// 넉넉하게 잡아서, 다음 사진으로 바뀌는 순간이 화면 밖에서 일어나 안 보이게 합니다.
+const EXIT_OFFSET = 480;
 
 const photos = Array.from(
   { length: gallery.count },
@@ -19,9 +23,12 @@ const photos = Array.from(
 export default function GallerySection() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const touchStartX = useRef<number | null>(null);
-  // 드래그 중 손가락을 따라 사진이 실시간으로 움직이도록 하는 값입니다.
+
+  // 드래그/슬라이드 애니메이션에 쓰는 값들
   const [dragX, setDragX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [transitionOn, setTransitionOn] = useState(true);
+  const isAnimatingRef = useRef(false);
 
   const close = () => setActiveIndex(null);
   const showPrev = () =>
@@ -29,10 +36,41 @@ export default function GallerySection() {
   const showNext = () =>
     setActiveIndex((i) => (i === null ? null : (i + 1) % photos.length));
 
+  // direction 1 = 다음 사진, -1 = 이전 사진.
+  // 1) 현재 사진을 화면 밖으로 슬라이드 아웃 → 2) 화면 밖에 있는 동안 사진을 교체하고
+  // 반대편 화면 밖으로 순간 이동(트랜지션 꺼둔 채라 안 보임) → 3) 중앙으로 슬라이드 인.
+  const runSlide = (direction: 1 | -1) => {
+    if (isAnimatingRef.current) return;
+    isAnimatingRef.current = true;
+
+    setTransitionOn(true);
+    setDragX(direction === 1 ? -EXIT_OFFSET : EXIT_OFFSET);
+
+    window.setTimeout(() => {
+      if (direction === 1) showNext();
+      else showPrev();
+
+      setTransitionOn(false);
+      setDragX(direction === 1 ? EXIT_OFFSET : -EXIT_OFFSET);
+
+      // 트랜지션을 끈 채로 반대편으로 순간 이동시킨 상태가 실제로 한 번 그려지도록
+      // 프레임을 넘긴 뒤에야 다시 트랜지션을 켜고 중앙(0)으로 슬라이드 인합니다.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTransitionOn(true);
+          setDragX(0);
+          window.setTimeout(() => {
+            isAnimatingRef.current = false;
+          }, ANIM_MS);
+        });
+      });
+    }, ANIM_MS);
+  };
+
   // 사진 위에서 왼쪽/오른쪽으로 스와이프하면 이전/다음 사진으로 넘어갑니다.
-  // 터치 중에는 손가락 움직임을 그대로 따라가게 해서 반응이 즉각적으로 느껴지고,
-  // 손을 떼는 순간에만 짧게(SNAP_DURATION_MS) 스냅 애니메이션이 붙습니다.
+  // 터치 중에는 손가락 움직임을 그대로 따라가게 해서 반응이 즉각적으로 느껴집니다.
   const onTouchStart = (e: React.TouchEvent) => {
+    if (isAnimatingRef.current) return;
     touchStartX.current = e.touches[0].clientX;
     setIsDragging(true);
   };
@@ -45,11 +83,13 @@ export default function GallerySection() {
     const deltaX = e.changedTouches[0].clientX - touchStartX.current;
     touchStartX.current = null;
     setIsDragging(false);
-    setDragX(0);
+
     if (deltaX <= -SWIPE_THRESHOLD) {
-      showNext(); // 왼쪽으로 스와이프 → 다음 사진
+      runSlide(1); // 왼쪽으로 스와이프 → 다음 사진
     } else if (deltaX >= SWIPE_THRESHOLD) {
-      showPrev(); // 오른쪽으로 스와이프 → 이전 사진
+      runSlide(-1); // 오른쪽으로 스와이프 → 이전 사진
+    } else {
+      setDragX(0); // 임계값 미달 → 제자리로 스냅
     }
   };
 
@@ -83,37 +123,54 @@ export default function GallerySection() {
 
       {activeIndex !== null && (
         <div
-          className="fixed inset-0 z-[80] mx-auto flex max-w-mobile flex-col items-center justify-center bg-black/90 px-4"
+          className="fixed inset-0 z-[80] mx-auto flex max-w-mobile flex-col items-center justify-center overflow-hidden bg-black/90 px-4"
           onClick={close}
         >
           <div
-            className="relative flex max-h-[80vh] w-full max-w-[420px] touch-pan-y items-center justify-center select-none"
+            className="relative h-[70vh] w-full max-w-[420px] touch-pan-y select-none"
             onClick={(e) => e.stopPropagation()}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
             style={{
               transform: `translateX(${dragX}px)`,
-              transition: isDragging ? "none" : `transform ${SNAP_DURATION_MS}ms ease-out`,
+              transition: isDragging || !transitionOn ? "none" : `transform ${ANIM_MS}ms ease-out`,
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            {/*
+              next/image를 써서 원본 파일(수 MB짜리 PNG일 수 있음)을 그대로 내려받지 않고,
+              Vercel이 화면 크기에 맞게 자동으로 축소/압축(webp 등)해서 내려주도록 했습니다.
+              이전에 일반 <img> 태그로 원본을 직접 불러오던 것보다 로딩이 훨씬 빨라집니다.
+            */}
+            <Image
               src={photos[activeIndex]}
               alt={`갤러리 사진 ${activeIndex + 1}`}
-              className="max-h-[80vh] w-auto max-w-full object-contain"
+              fill
+              sizes="420px"
+              className="object-contain"
               draggable={false}
+              priority
             />
           </div>
 
           <div className="mt-6 flex items-center gap-8 text-white">
-            <button type="button" onClick={showPrev} aria-label="이전 사진" className="text-2xl">
+            <button
+              type="button"
+              onClick={() => runSlide(-1)}
+              aria-label="이전 사진"
+              className="text-2xl"
+            >
               ‹
             </button>
             <span className="font-mono text-xs tracking-widest">
               {activeIndex + 1} / {photos.length}
             </span>
-            <button type="button" onClick={showNext} aria-label="다음 사진" className="text-2xl">
+            <button
+              type="button"
+              onClick={() => runSlide(1)}
+              aria-label="다음 사진"
+              className="text-2xl"
+            >
               ›
             </button>
           </div>
