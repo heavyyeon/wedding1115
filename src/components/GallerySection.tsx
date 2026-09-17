@@ -36,6 +36,15 @@ export default function GallerySection() {
   const showNext = () =>
     setActiveIndex((i) => (i === null ? null : (i + 1) % photos.length));
 
+  // 지금 보고 있는 사진의 "바로 다음/이전" 사진만 미리 최적화 요청을 보내둡니다.
+  // (Vercel의 이미지 최적화는 그 사진을 그 크기로 처음 요청받을 때 한 번 축소/압축하고,
+  // 그 뒤로는 캐시에서 바로 나갑니다. 그래서 한 번도 열어본 적 없는 사진은 처음 열 때만
+  // 살짝 느리고, 그다음부터는 누가 봐도 빠릅니다. 여기서 다음/이전 사진을 미리 한 번
+  // "예열"해두면, 순서대로 넘길 때는 항상 이미 준비된 상태라 빠르게 느껴집니다.)
+  const prevIndex =
+    activeIndex === null ? null : (activeIndex - 1 + photos.length) % photos.length;
+  const nextIndex = activeIndex === null ? null : (activeIndex + 1) % photos.length;
+
   // direction 1 = 다음 사진, -1 = 이전 사진.
   // 1) 현재 사진을 화면 밖으로 슬라이드 아웃 → 2) 화면 밖에 있는 동안 사진을 교체하고
   // 반대편 화면 밖으로 순간 이동(트랜지션 꺼둔 채라 안 보임) → 3) 중앙으로 슬라이드 인.
@@ -151,6 +160,17 @@ export default function GallerySection() {
               draggable={false}
               priority
             />
+          </div>
+
+          {/* 화면에는 보이지 않지만, 바로 다음/이전 사진을 같은 크기로 미리 요청해서
+              최적화 캐시를 예열해둡니다. */}
+          <div className="hidden" aria-hidden="true">
+            {prevIndex !== null && (
+              <Image src={photos[prevIndex]} alt="" fill sizes="420px" priority />
+            )}
+            {nextIndex !== null && (
+              <Image src={photos[nextIndex]} alt="" fill sizes="420px" priority />
+            )}
           </div>
 
           <div className="mt-6 flex items-center gap-8 text-white">
