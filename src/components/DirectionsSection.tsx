@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { directions, wedding } from "@/data/wedding";
-import { kakaoNaviAppUrl, naverMapAppUrl, tmapAppUrl } from "@/lib/navigation";
+import { kakaoNaviSearchUrl, naverMapSearchUrl, tmapSearchUrl } from "@/lib/navigation";
 import Reveal from "@/components/Reveal";
 
 const navApps = [
@@ -11,34 +11,26 @@ const navApps = [
     key: "naver",
     label: "네이버지도",
     className: "bg-[#03c75a] text-white",
-    getHref: (lat: number, lng: number, name: string, appUrl: string) =>
-      naverMapAppUrl(lat, lng, name, appUrl),
+    getHref: naverMapSearchUrl,
+    external: true, // 일반 웹 링크라 새 탭으로 엽니다.
   },
   {
     key: "tmap",
     label: "티맵",
     className: "border border-neutral-200 bg-white text-neutral-800",
-    getHref: (lat: number, lng: number, name: string, _appUrl: string) =>
-      tmapAppUrl(lat, lng, name),
+    getHref: tmapSearchUrl,
   },
   {
     key: "kakao",
     label: "카카오내비",
     className: "bg-[#fee500] text-neutral-900",
-    getHref: (lat: number, lng: number, name: string, _appUrl: string) =>
-      kakaoNaviAppUrl(lat, lng, name),
+    getHref: kakaoNaviSearchUrl,
   },
 ];
 
 export default function DirectionsSection() {
   const [guideOpen, setGuideOpen] = useState(false);
-  const [pageUrl, setPageUrl] = useState("");
-  const { lat, lng } = directions.coords;
   const venueName = wedding.venueName;
-
-  useEffect(() => {
-    setPageUrl(window.location.href);
-  }, []);
 
   return (
     <section className="px-6 py-20">
@@ -47,9 +39,6 @@ export default function DirectionsSection() {
         <p className="mt-2 font-serif text-lg text-neutral-700">오시는 길</p>
         <p className="mt-3 text-sm font-medium text-neutral-800">{venueName}</p>
         <p className="mt-1 text-xs text-neutral-500">{wedding.address}</p>
-        {directions.tel && (
-          <p className="mt-1 text-xs text-neutral-400">Tel. {directions.tel}</p>
-        )}
       </Reveal>
 
       <Reveal className="flex flex-col gap-3">
@@ -82,7 +71,8 @@ export default function DirectionsSection() {
             {navApps.map((app) => (
               <a
                 key={app.key}
-                href={app.getHref(lat, lng, venueName, pageUrl)}
+                href={app.getHref(directions.searchQuery)}
+                {...(app.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 className={`rounded-md py-2.5 text-center text-xs font-medium transition active:scale-[0.98] ${app.className}`}
               >
                 {app.label}
