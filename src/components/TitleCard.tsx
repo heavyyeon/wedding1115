@@ -5,7 +5,7 @@ import Image from "next/image";
 import { couple } from "@/data/wedding";
 
 // 문구 없이 메인 사진 한 장만 꽉 채우는 첫 화면입니다.
-// 이름/날짜 문구가 필요하면 /public/main-photo.jpg 자체에 디자인해서 넣어주세요.
+// 이름/문구가 필요하면 /public/main-photo.png 자체에 디자인해서 넣어주세요.
 //
 // 모바일 브라우저(특히 카카오톡/인스타그램 인앱 브라우저 등)는 스크롤 시 주소창이
 // 접히면서 화면 높이(vh/dvh/svh 값)가 실시간으로 바뀌어, 사진 영역 크기가 "출렁"거리는
@@ -16,6 +16,8 @@ export default function TitleCard() {
   const [heightPx, setHeightPx] = useState<number | null>(null);
 
   useEffect(() => {
+    // 페이지에 처음 들어온 시점의 높이만 딱 한 번 측정해서 고정합니다.
+    // (스크롤 중 주소창이 접히고 펴지는 것에는 반응하지 않도록 resize 리스너를 걸지 않습니다.)
     setHeightPx(window.innerHeight);
   }, []);
 
@@ -25,7 +27,7 @@ export default function TitleCard() {
       style={{ height: heightPx ? `${heightPx}px` : "100svh" }}
     >
       <Image
-        src="/main-photo.jpg"
+        src="/main-photo.png"
         alt={`${couple.groom.name}, ${couple.bride.name}`}
         fill
         priority
