@@ -34,7 +34,7 @@ export default function MonthCalendar({
             <th
               key={w}
               className={`pb-3 text-xs font-medium ${
-                i === 0 ? "text-rose-300" : "text-neutral-400"
+                i === 0 ? "text-rose-300" : "text-white/40"
               }`}
             >
               {w}
@@ -57,7 +57,7 @@ export default function MonthCalendar({
                           ? "bg-rose-300 font-semibold text-white"
                           : isSunday
                           ? "text-rose-300"
-                          : "text-neutral-700"
+                          : "text-white/80"
                       }`}
                     >
                       {day}

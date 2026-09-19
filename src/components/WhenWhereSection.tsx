@@ -35,33 +35,33 @@ export default function WhenWhereSection() {
   const daysRemaining = now ? getCalendarDaysRemaining(weddingDate, now) : null;
 
   return (
-    <section className="bg-white px-6 py-20 text-neutral-800">
+    <section className="bg-black px-6 py-20 text-white">
       <Reveal className="mx-auto flex max-w-[320px] flex-col items-center gap-6 text-center">
         <div>
-          <p className="font-mono text-xl tracking-wider text-neutral-900">
+          <p className="font-mono text-xl tracking-wider text-white">
             {wedding.year}.{pad2(wedding.month)}.{pad2(wedding.day)}
           </p>
-          <p className="mt-1 text-sm text-neutral-500">
+          <p className="mt-1 text-sm text-white/70">
             {wedding.dayOfWeekLabel} {wedding.hour < 12 ? "오전" : "오후"}{" "}
             {wedding.hour > 12 ? wedding.hour - 12 : wedding.hour}시{" "}
             {wedding.minute === 0 ? "" : `${wedding.minute}분`}
           </p>
-          <p className="mt-1 text-sm text-neutral-400">{wedding.venueName}</p>
+          <p className="mt-1 text-sm text-white/50">{wedding.venueName}</p>
         </div>
 
-        <div className="h-px w-full bg-neutral-200" />
+        <div className="h-px w-full bg-white/20" />
 
         <div className="w-full">
           <MonthCalendar year={wedding.year} month={wedding.month} highlightDay={wedding.day} />
         </div>
 
-        <div className="h-px w-full bg-neutral-200" />
+        <div className="h-px w-full bg-white/20" />
 
         <div>
-          <p className="mb-2 font-mono text-[11px] tracking-[0.25em] text-neutral-400">
+          <p className="mb-2 font-mono text-[11px] tracking-[0.25em] text-white/40">
             DAYS&nbsp;&nbsp;&nbsp;HOUR&nbsp;&nbsp;&nbsp;MIN&nbsp;&nbsp;&nbsp;SEC
           </p>
-          <p className="font-mono text-2xl tracking-widest text-neutral-800">
+          <p className="font-mono text-2xl tracking-widest text-white">
             {countdown ? (
               <>
                 {pad2(countdown.days)} : {pad2(countdown.hours)} :{" "}
@@ -74,7 +74,7 @@ export default function WhenWhereSection() {
           </p>
         </div>
 
-        <p className="text-sm text-neutral-500">
+        <p className="text-sm text-white/70">
           {couple.groom.name}, {couple.bride.name}의 결혼식이{" "}
           {daysRemaining !== null ? daysRemainingLabel(daysRemaining) : ""}.
         </p>

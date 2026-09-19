@@ -1,30 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { couple } from "@/data/wedding";
 
-// 문구 없이 메인 사진 한 장만 꽉 채우는 첫 화면입니다.
+// 문구 없이 메인 사진 한 장만 보여주는 첫 화면입니다.
 // 이름/문구가 필요하면 /public/main-photo.png 자체에 디자인해서 넣어주세요.
 //
-// 모바일 브라우저(특히 카카오톡/인스타그램 인앱 브라우저 등)는 스크롤 시 주소창이
-// 접히면서 화면 높이(vh/dvh/svh 값)가 실시간으로 바뀌어, 사진 영역 크기가 "출렁"거리는
-// 것처럼 보일 수 있습니다. CSS 단위 대신 최초 진입 시점의 실제 화면 높이(px)를
-// 자바스크립트로 한 번 측정해 고정값으로 박아 넣어, 이후 스크롤/주소창 변화와
-// 무관하게 항상 같은 크기를 유지하도록 했습니다.
+// 예전에는 화면 높이(세로)에 꽉 채우고 object-cover로 잘라내는 방식이라, 사진의 가로세로
+// 비율이 화면 비율과 다르면 사진 위/아래가 잘려서 보이는 문제가 있었습니다. 지금은 반대로
+// 사진이 실제로 로드된 뒤 그 사진의 원본 가로:세로 비율을 측정해서, 화면 영역 자체를
+// 그 비율에 맞게 만듭니다. 그래서 사진이 잘리지 않고 항상 처음부터 끝까지 전부 보입니다.
 export default function TitleCard() {
-  const [heightPx, setHeightPx] = useState<number | null>(null);
-
-  useEffect(() => {
-    // 페이지에 처음 들어온 시점의 높이만 딱 한 번 측정해서 고정합니다.
-    // (스크롤 중 주소창이 접히고 펴지는 것에는 반응하지 않도록 resize 리스너를 걸지 않습니다.)
-    setHeightPx(window.innerHeight);
-  }, []);
+  // 사진이 아직 로드되기 전에는 흔한 세로 사진 비율(4:5)을 기본값으로 잠깐 보여주고,
+  // 로드가 끝나면 실제 비율로 바꿔줍니다.
+  const [ratio, setRatio] = useState(4 / 5);
 
   return (
     <section
       className="relative w-full overflow-hidden"
-      style={{ height: heightPx ? `${heightPx}px` : "100svh" }}
+      style={{ aspectRatio: ratio }}
     >
       <Image
         src="/main-photo.png"
@@ -33,6 +28,12 @@ export default function TitleCard() {
         priority
         sizes="480px"
         className="object-cover"
+        onLoad={(e) => {
+          const img = e.currentTarget;
+          if (img.naturalWidth && img.naturalHeight) {
+            setRatio(img.naturalWidth / img.naturalHeight);
+          }
+        }}
       />
     </section>
   );
