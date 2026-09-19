@@ -1,5 +1,4 @@
 import TitleCard from "@/components/TitleCard";
-import InvitationSection from "@/components/InvitationSection";
 import WhenWhereSection from "@/components/WhenWhereSection";
 import GallerySection from "@/components/GallerySection";
 import GuestBookSection from "@/components/GuestBookSection";
@@ -10,7 +9,6 @@ export default function HomePage() {
   return (
     <>
       <TitleCard />
-      <InvitationSection />
       <WhenWhereSection />
       <GallerySection />
       <GuestBookSection />
