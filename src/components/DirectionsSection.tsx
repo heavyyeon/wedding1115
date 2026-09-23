@@ -71,7 +71,7 @@ export default function DirectionsSection() {
 
         {directions.subway.length > 0 && (
           <div className="mt-4 rounded-xl bg-white/70 p-4 shadow-sm">
-            <p className="mb-2 font-mono text-[11px] tracking-widest text-accent">지하철</p>
+            <p className="mb-2 text-sm font-semibold text-rose-300">지하철</p>
             <ul className="flex flex-col gap-1.5">
               {directions.subway.map((s, i) => (
                 <li key={i} className="flex items-center gap-2 text-sm text-neutral-600">
@@ -90,7 +90,7 @@ export default function DirectionsSection() {
         )}
 
         <div className="rounded-xl bg-white/70 p-4 shadow-sm">
-          <p className="mb-2 font-mono text-[11px] tracking-widest text-accent">주차안내</p>
+          <p className="mb-2 text-sm font-semibold text-rose-300">주차안내</p>
 
           <div className="flex items-center justify-between gap-3">
             <p className="text-sm text-neutral-600">{directions.parkingAddress}</p>
