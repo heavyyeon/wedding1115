@@ -1,10 +1,19 @@
 "use client";
 
-import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import Script from "next/script";
 import { directions, wedding } from "@/data/wedding";
 import { naverMapSearchUrl, tmapSearchUrl } from "@/lib/navigation";
 import { useToast } from "@/context/ToastContext";
 import Reveal from "@/components/Reveal";
+
+// 네이버 지도 JS SDK는 window.naver 전역 객체로 로드됩니다. 타입 정의 패키지를 따로 설치하지
+// 않았으므로(불필요한 의존성을 늘리지 않기 위해) any로 최소한만 선언해서 씁니다.
+declare global {
+  interface Window {
+    naver: any;
+  }
+}
 
 const navApps = [
   {
@@ -25,6 +34,46 @@ const navApps = [
 export default function DirectionsSection() {
   const { showToast } = useToast();
   const venueName = wedding.venueName;
+  const mapElRef = useRef<HTMLDivElement>(null);
+  const [sdkReady, setSdkReady] = useState(false);
+  const [mapFailed, setMapFailed] = useState(false);
+
+  // 지도를 그릴 때 위도/경도를 직접 입력하지 않고, 네이버 Geocoding API에 실제 주소
+  // 텍스트(searchQuery)를 넘겨서 정확한 좌표를 그때그때 받아옵니다. 좌표를 사람이 직접
+  // 입력하면 오타 등으로 엉뚱한 위치가 표시될 위험이 있어, 이 방식이 더 안전합니다.
+  useEffect(() => {
+    if (!sdkReady || !mapElRef.current) return;
+    const naver = window.naver;
+    if (!naver?.maps?.Service) {
+      setMapFailed(true);
+      return;
+    }
+
+    naver.maps.Service.geocode(
+      { query: directions.searchQuery },
+      (status: string, response: any) => {
+        if (status !== naver.maps.Service.Status.OK) {
+          setMapFailed(true);
+          return;
+        }
+        const result = response.v2.addresses[0];
+        if (!result || !mapElRef.current) {
+          setMapFailed(true);
+          return;
+        }
+
+        const center = new naver.maps.LatLng(Number(result.y), Number(result.x));
+        const map = new naver.maps.Map(mapElRef.current, {
+          center,
+          zoom: 17,
+          scaleControl: false,
+          logoControl: false,
+          mapDataControl: false,
+        });
+        new naver.maps.Marker({ position: center, map });
+      }
+    );
+  }, [sdkReady]);
 
   const copyAddress = async () => {
     try {
@@ -37,6 +86,13 @@ export default function DirectionsSection() {
 
   return (
     <section className="px-6 py-20">
+      <Script
+        src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${directions.naverMapClientId}&submodules=geocoder`}
+        strategy="afterInteractive"
+        onReady={() => setSdkReady(true)}
+        onError={() => setMapFailed(true)}
+      />
+
       <Reveal className="mb-6 text-center">
         <p className="font-serif text-lg text-neutral-700">오시는 길</p>
         <p className="mt-3 text-sm font-medium text-neutral-800">{venueName}</p>
@@ -45,13 +101,14 @@ export default function DirectionsSection() {
 
       <Reveal className="flex flex-col gap-3">
         <div className="relative h-52 w-full overflow-hidden rounded-xl bg-neutral-100">
-          <Image
-            src={directions.mapImage}
-            alt={`${venueName} 위치 지도`}
-            fill
-            sizes="480px"
-            className="object-cover"
-          />
+          {/* 실제 움직이는/확대 가능한 네이버 지도입니다. SDK 로드나 주소 검색이 실패하면
+              대신 안내 문구를 보여줍니다(지도 자체가 깨진 채로 보이는 것을 막기 위함). */}
+          <div ref={mapElRef} className="h-full w-full" />
+          {mapFailed && (
+            <div className="absolute inset-0 flex items-center justify-center bg-neutral-100 px-4 text-center text-xs text-neutral-400">
+              지도를 불러오지 못했어요. 아래 "네이버지도" 버튼으로 확인해주세요.
+            </div>
+          )}
         </div>
 
         <div className="mt-4">
