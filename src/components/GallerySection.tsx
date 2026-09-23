@@ -201,26 +201,12 @@ export default function GallerySection() {
             )}
           </div>
 
-          <div className="mt-6 flex items-center gap-8 text-white">
-            <button
-              type="button"
-              onClick={() => runSlide(-1)}
-              aria-label="이전 사진"
-              className="text-2xl"
-            >
-              ‹
-            </button>
+          {/* 양옆 큰 화살표 버튼이 생기면서 여기 작은 화살표는 중복이라 삭제하고,
+              숫자 표시만 남겼습니다. */}
+          <div className="mt-6 flex items-center text-white">
             <span className="font-mono text-xs tracking-widest">
               {activeIndex + 1} / {photos.length}
             </span>
-            <button
-              type="button"
-              onClick={() => runSlide(1)}
-              aria-label="다음 사진"
-              className="text-2xl"
-            >
-              ›
-            </button>
           </div>
 
           <button
