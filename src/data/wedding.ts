@@ -78,10 +78,9 @@ export const accounts = {
 };
 
 export type SubwayInfo = { line: string; color: string; desc: string };
-export type BusInfo = { type: string; numbers: string };
 
 export const directions = {
-  // "네이버지도/티맵/카카오내비" 버튼이 위치를 검색할 때 쓰는 검색어입니다. 정확한 GPS 좌표를
+  // "네이버지도/티맵" 버튼이 위치를 검색할 때 쓰는 검색어입니다. 정확한 GPS 좌표를
   // 직접 넣는 대신, 실제 주소/건물명 텍스트를 각 지도 서비스에 그대로 넘겨서 그 서비스가 직접
   // 정확한 위치를 찾아가도록 합니다. 주소나 건물명이 바뀌면 이 값만 수정하면 됩니다.
   searchQuery: "서울특별시 영등포구 여의대방로 259 공군호텔",
@@ -90,24 +89,14 @@ export const directions = {
   // 위치를 캡처한 스크린샷을 그대로 사진처럼 넣는 방식 — API 키가 필요 없어요).
   mapImage: "/map-preview.jpg",
 
-  // "약도 이미지 보기" 버튼을 누르면 뜨는 손그림/캡처 약도 이미지
-  mapGuideImage: "/map-guide.jpg",
-
   // 지하철 안내 목록 (원하는 만큼 추가/삭제 가능)
-  subway: [
-    { line: "[호선]", color: "#a8d96c", desc: "[역 이름 O번 출구]" },
-  ] as SubwayInfo[],
-  subwayWalk: "[출구에서부터의 도보 안내를 입력해주세요. 예: 좌측 방향 500m 도보 후 좌측 건물]",
+  subway: [{ line: "1호선", color: "#a8d96c", desc: "대방역 6번출구" }] as SubwayInfo[],
+  subwayWalk: "6번출구에서 300M 직진후 우측건물",
 
-  // 버스 안내 목록 (원하는 만큼 추가/삭제 가능)
-  bus: [
-    { type: "간선버스", numbers: "[번호를 입력해주세요]" },
-    { type: "지선버스", numbers: "[번호를 입력해주세요]" },
-  ] as BusInfo[],
-  busShuttle: "", // 셔틀버스 안내가 있다면 입력 (없으면 빈 문자열로 두면 화면에 표시되지 않습니다)
-
-  // 자가용 안내
-  car: "[자가용 안내 / 주차 안내를 입력해주세요. 예: 내비게이션에 '공군호텔' 검색, 지하주차장 2시간 무료]",
+  // 주차안내: 복사 버튼이 복사하는 실제 주소
+  parkingAddress: "서울특별시 영등포구 여의대방로 259",
+  // 주차안내 설명 줄 (원하는 만큼 추가/삭제 가능)
+  parkingNotes: ["주차 3시간 무료", "공군호텔 건물내 무인정산기 이용"],
 };
 
 // Kakao 공유(OG) 관련 텍스트. layout.tsx 의 메타데이터에서 사용됩니다.
