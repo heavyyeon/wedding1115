@@ -12,6 +12,10 @@ import Reveal from "@/components/Reveal";
 declare global {
   interface Window {
     naver: any;
+    // 네이버 지도 SDK가 "Client ID가 이 도메인에 등록되어 있지 않음" 등 인증에 실패했을 때
+    // 자동으로 호출해주는 콜백입니다. 이걸 미리 등록해두면, 인증 실패처럼 브라우저 콘솔에
+    // 별다른 에러 없이 조용히 실패하는 경우에도 원인을 정확히 알 수 있습니다.
+    navermap_authFailure?: () => void;
   }
 }
 
@@ -38,6 +42,19 @@ export default function DirectionsSection() {
   const [sdkReady, setSdkReady] = useState(false);
   const [mapFailed, setMapFailed] = useState(false);
 
+  // 네이버 지도 SDK 스크립트가 로드되기 전에 인증 실패 콜백을 먼저 등록해둡니다.
+  // (스크립트보다 늦게 등록하면 실패 시점에 콜백이 아직 없어서 조용히 무시될 수 있습니다.)
+  useEffect(() => {
+    window.navermap_authFailure = () => {
+      // eslint-disable-next-line no-console
+      console.error(
+        "[네이버지도] 인증 실패: Client ID가 잘못되었거나, 지금 보고 있는 이 도메인이 " +
+          "네이버클라우드 콘솔의 '서비스 환경(Web 서비스 URL)'에 등록되어 있지 않습니다."
+      );
+      setMapFailed(true);
+    };
+  }, []);
+
   // 지도를 그릴 때 위도/경도를 직접 입력하지 않고, 네이버 Geocoding API에 실제 주소
   // 텍스트(searchQuery)를 넘겨서 정확한 좌표를 그때그때 받아옵니다. 좌표를 사람이 직접
   // 입력하면 오타 등으로 엉뚱한 위치가 표시될 위험이 있어, 이 방식이 더 안전합니다.
@@ -45,6 +62,8 @@ export default function DirectionsSection() {
     if (!sdkReady || !mapElRef.current) return;
     const naver = window.naver;
     if (!naver?.maps?.Service) {
+      // eslint-disable-next-line no-console
+      console.error("[네이버지도] SDK는 로드됐지만 Service(geocoder) 모듈이 없습니다.", naver);
       setMapFailed(true);
       return;
     }
@@ -53,11 +72,15 @@ export default function DirectionsSection() {
       { query: directions.searchQuery },
       (status: string, response: any) => {
         if (status !== naver.maps.Service.Status.OK) {
+          // eslint-disable-next-line no-console
+          console.error("[네이버지도] geocode 실패, status:", status, "response:", response);
           setMapFailed(true);
           return;
         }
         const result = response.v2.addresses[0];
         if (!result || !mapElRef.current) {
+          // eslint-disable-next-line no-console
+          console.error("[네이버지도] 검색 결과가 없습니다:", response);
           setMapFailed(true);
           return;
         }
@@ -90,7 +113,11 @@ export default function DirectionsSection() {
         src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${directions.naverMapClientId}&submodules=geocoder`}
         strategy="afterInteractive"
         onReady={() => setSdkReady(true)}
-        onError={() => setMapFailed(true)}
+        onError={(e) => {
+          // eslint-disable-next-line no-console
+          console.error("[네이버지도] 스크립트 자체를 불러오지 못했습니다:", e);
+          setMapFailed(true);
+        }}
       />
 
       <Reveal className="mb-6 text-center">
