@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { directions, wedding } from "@/data/wedding";
-import { kakaoNaviSearchUrl, naverMapSearchUrl, tmapSearchUrl } from "@/lib/navigation";
+import { naverMapSearchUrl, tmapSearchUrl } from "@/lib/navigation";
+import { useToast } from "@/context/ToastContext";
 import Reveal from "@/components/Reveal";
 
 const navApps = [
@@ -20,23 +20,25 @@ const navApps = [
     className: "border border-neutral-200 bg-white text-neutral-800",
     getHref: tmapSearchUrl,
   },
-  {
-    key: "kakao",
-    label: "카카오내비",
-    className: "bg-[#fee500] text-neutral-900",
-    getHref: kakaoNaviSearchUrl,
-  },
 ];
 
 export default function DirectionsSection() {
-  const [guideOpen, setGuideOpen] = useState(false);
+  const { showToast } = useToast();
   const venueName = wedding.venueName;
+
+  const copyAddress = async () => {
+    try {
+      await navigator.clipboard.writeText(directions.parkingAddress);
+      showToast("주소가 복사되었어요");
+    } catch {
+      showToast("복사에 실패했어요");
+    }
+  };
 
   return (
     <section className="px-6 py-20">
       <Reveal className="mb-6 text-center">
-        <p className="font-serif text-xs tracking-[0.3em] text-neutral-400">LOCATION</p>
-        <p className="mt-2 font-serif text-lg text-neutral-700">오시는 길</p>
+        <p className="font-serif text-lg text-neutral-700">오시는 길</p>
         <p className="mt-3 text-sm font-medium text-neutral-800">{venueName}</p>
         <p className="mt-1 text-xs text-neutral-500">{wedding.address}</p>
       </Reveal>
@@ -52,22 +54,8 @@ export default function DirectionsSection() {
           />
         </div>
 
-        <button
-          type="button"
-          onClick={() => setGuideOpen(true)}
-          className="rounded-md border border-neutral-200 py-2.5 text-sm text-neutral-600 transition active:scale-[0.98]"
-        >
-          약도 이미지 보기
-        </button>
-
         <div className="mt-4">
-          <p className="mb-1 font-mono text-[11px] tracking-widest text-neutral-400">
-            NAVIGATION
-          </p>
-          <p className="mb-3 text-xs text-neutral-400">
-            원하시는 앱을 선택하시면 길안내가 시작됩니다.
-          </p>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {navApps.map((app) => (
               <a
                 key={app.key}
@@ -101,60 +89,32 @@ export default function DirectionsSection() {
           </div>
         )}
 
-        {directions.bus.length > 0 && (
-          <div className="rounded-xl bg-white/70 p-4 shadow-sm">
-            <p className="mb-2 font-mono text-[11px] tracking-widest text-accent">버스</p>
-            <ul className="flex flex-col gap-1.5">
-              {directions.bus.map((b, i) => (
+        <div className="rounded-xl bg-white/70 p-4 shadow-sm">
+          <p className="mb-2 font-mono text-[11px] tracking-widest text-accent">주차안내</p>
+
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm text-neutral-600">{directions.parkingAddress}</p>
+            <button
+              type="button"
+              onClick={copyAddress}
+              className="flex-shrink-0 rounded-md bg-rose-300 px-3 py-1.5 text-xs font-medium text-white active:scale-95"
+            >
+              복사하기
+            </button>
+          </div>
+
+          {directions.parkingNotes.length > 0 && (
+            <ul className="mt-3 flex flex-col gap-1.5">
+              {directions.parkingNotes.map((note, i) => (
                 <li key={i} className="flex items-center gap-2 text-sm text-neutral-600">
                   <span className="inline-block h-2.5 w-2.5 flex-shrink-0 rounded-full bg-neutral-400" />
-                  {b.type} : {b.numbers}
+                  {note}
                 </li>
               ))}
             </ul>
-            {directions.busShuttle && (
-              <p className="mt-2 text-xs text-neutral-400">{directions.busShuttle}</p>
-            )}
-          </div>
-        )}
-
-        {directions.car && (
-          <div className="rounded-xl bg-white/70 p-4 shadow-sm">
-            <p className="mb-2 font-mono text-[11px] tracking-widest text-accent">자가용</p>
-            <p className="whitespace-pre-line text-sm leading-relaxed text-neutral-600">
-              {directions.car}
-            </p>
-          </div>
-        )}
-      </Reveal>
-
-      {guideOpen && (
-        <div
-          className="fixed inset-0 z-[90] mx-auto flex max-w-mobile items-center justify-center bg-black/80 p-6"
-          onClick={() => setGuideOpen(false)}
-        >
-          <div
-            className="relative aspect-[3/4] w-full max-w-[380px]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Image
-              src={directions.mapGuideImage}
-              alt="약도"
-              fill
-              sizes="380px"
-              className="rounded-lg object-contain"
-            />
-          </div>
-          <button
-            type="button"
-            onClick={() => setGuideOpen(false)}
-            aria-label="닫기"
-            className="absolute right-4 top-6 text-xl text-white/80"
-          >
-            ✕
-          </button>
+          )}
         </div>
-      )}
+      </Reveal>
     </section>
   );
 }
