@@ -60,42 +60,65 @@ export default function DirectionsSection() {
   // 입력하면 오타 등으로 엉뚱한 위치가 표시될 위험이 있어, 이 방식이 더 안전합니다.
   useEffect(() => {
     if (!sdkReady || !mapElRef.current) return;
-    const naver = window.naver;
-    if (!naver?.maps?.Service) {
-      // eslint-disable-next-line no-console
-      console.error("[네이버지도] SDK는 로드됐지만 Service(geocoder) 모듈이 없습니다.", naver);
-      setMapFailed(true);
-      return;
-    }
 
-    naver.maps.Service.geocode(
-      { query: directions.searchQuery },
-      (status: string, response: any) => {
-        if (status !== naver.maps.Service.Status.OK) {
+    let cancelled = false;
+    let attempts = 0;
+
+    // next/script의 onReady는 maps.js 본 파일이 실행 완료된 시점에 불리는데, submodules로
+    // 함께 요청한 geocoder 기능은 그 직후 아주 잠깐의 시간차를 두고 내부적으로 붙는
+    // 경우가 있습니다. 그래서 naver.maps.Service가 없다고 바로 실패 처리하지 않고,
+    // 최대 3초(150ms × 20번) 정도는 잠깐씩 기다렸다가 다시 확인해봅니다.
+    const tryGeocode = () => {
+      if (cancelled) return;
+      const naver = window.naver;
+
+      if (!naver?.maps?.Service) {
+        attempts += 1;
+        if (attempts > 20) {
           // eslint-disable-next-line no-console
-          console.error("[네이버지도] geocode 실패, status:", status, "response:", response);
+          console.error("[네이버지도] Service(geocoder) 모듈이 끝내 준비되지 않았습니다.", naver);
           setMapFailed(true);
           return;
         }
-        const result = response.v2.addresses[0];
-        if (!result || !mapElRef.current) {
-          // eslint-disable-next-line no-console
-          console.error("[네이버지도] 검색 결과가 없습니다:", response);
-          setMapFailed(true);
-          return;
-        }
-
-        const center = new naver.maps.LatLng(Number(result.y), Number(result.x));
-        const map = new naver.maps.Map(mapElRef.current, {
-          center,
-          zoom: 17,
-          scaleControl: false,
-          logoControl: false,
-          mapDataControl: false,
-        });
-        new naver.maps.Marker({ position: center, map });
+        window.setTimeout(tryGeocode, 150);
+        return;
       }
-    );
+
+      naver.maps.Service.geocode(
+        { query: directions.searchQuery },
+        (status: string, response: any) => {
+          if (cancelled) return;
+          if (status !== naver.maps.Service.Status.OK) {
+            // eslint-disable-next-line no-console
+            console.error("[네이버지도] geocode 실패, status:", status, "response:", response);
+            setMapFailed(true);
+            return;
+          }
+          const result = response.v2.addresses[0];
+          if (!result || !mapElRef.current) {
+            // eslint-disable-next-line no-console
+            console.error("[네이버지도] 검색 결과가 없습니다:", response);
+            setMapFailed(true);
+            return;
+          }
+
+          const center = new naver.maps.LatLng(Number(result.y), Number(result.x));
+          const map = new naver.maps.Map(mapElRef.current, {
+            center,
+            zoom: 17,
+            scaleControl: false,
+            logoControl: false,
+            mapDataControl: false,
+          });
+          new naver.maps.Marker({ position: center, map });
+        }
+      );
+    };
+
+    tryGeocode();
+    return () => {
+      cancelled = true;
+    };
   }, [sdkReady]);
 
   const copyAddress = async () => {
