@@ -10,7 +10,9 @@ function AccountRow({ entry }: { entry: AccountEntry }) {
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(`${entry.bank} ${entry.number}`);
+      // 복사 버튼은 은행명 없이 계좌번호 숫자만 복사되게 합니다.
+      // (송금 앱에 붙여넣을 때 계좌번호만 바로 입력되도록)
+      await navigator.clipboard.writeText(entry.number);
       showToast("계좌번호가 복사되었어요");
     } catch {
       showToast("복사에 실패했어요");
@@ -22,10 +24,10 @@ function AccountRow({ entry }: { entry: AccountEntry }) {
       <p className="text-sm font-semibold text-neutral-800">{entry.name}</p>
       <div className="mt-2 flex items-center justify-between gap-3">
         <div>
-          <p className="text-sm text-neutral-700">{entry.number}</p>
-          <p className="text-xs text-neutral-400">
-            {entry.bank} {entry.holder}
+          <p className="text-sm text-neutral-700">
+            {entry.bank} {entry.number}
           </p>
+          <p className="text-xs text-neutral-400">{entry.holder}</p>
         </div>
         <div className="flex flex-shrink-0 items-center gap-1.5">
           <button
@@ -80,10 +82,7 @@ export default function AccountSection() {
   return (
     <section className="bg-white px-6 py-20 text-neutral-900">
       <Reveal className="mb-8 text-center">
-        <p className="font-serif text-xs tracking-[0.3em] text-neutral-800/70">
-          FOR YOUR HEART
-        </p>
-        <p className="mt-2 font-serif text-lg">마음을 전하실 곳</p>
+        <p className="font-serif text-lg">마음을 전하실 곳</p>
       </Reveal>
 
       <Reveal className="flex flex-col gap-3">
