@@ -162,6 +162,34 @@ export default function GallerySection() {
             />
           </div>
 
+          {/*
+            PC(마우스)에서도 좌우로 넘길 수 있도록 사진 양옆에 화살표 버튼을 추가했습니다.
+            버튼 크기를 화살표 글자보다 훨씬 크게(h-14 w-14) 잡아서, 화살표를 정확히
+            클릭하지 않고 그 근처만 눌러도 바로 넘어가도록 했습니다.
+          */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              runSlide(-1);
+            }}
+            aria-label="이전 사진"
+            className="absolute left-1 top-1/2 z-10 flex h-14 w-14 -translate-y-1/2 items-center justify-center text-3xl text-white/70 transition active:scale-90 active:text-white sm:left-3"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              runSlide(1);
+            }}
+            aria-label="다음 사진"
+            className="absolute right-1 top-1/2 z-10 flex h-14 w-14 -translate-y-1/2 items-center justify-center text-3xl text-white/70 transition active:scale-90 active:text-white sm:right-3"
+          >
+            ›
+          </button>
+
           {/* 화면에는 보이지 않지만, 바로 다음/이전 사진을 같은 크기로 미리 요청해서
               최적화 캐시를 예열해둡니다. */}
           <div className="hidden" aria-hidden="true">
