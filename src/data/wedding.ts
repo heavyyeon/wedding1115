@@ -113,6 +113,3 @@ export const gallery = {
   extension: "png",
 };
 
-export const bgm = {
-  src: "/bgm.mp3",
-};
