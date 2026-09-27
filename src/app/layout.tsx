@@ -19,10 +19,14 @@ const spaceMono = Space_Mono({
   display: "swap",
 });
 
+// 카카오톡 등에서 공유 썸네일 이미지가 절대 URL로 뜨려면, next/metadata가 이미지 경로를
+// 계산할 때 기준으로 삼을 실제 배포 도메인이 필요합니다. Vercel 환경변수 설정 화면에서
+// 자꾸 경고가 떠서 저장이 안 되는 문제가 있어, 환경변수 대신 정식 도메인을 코드에 직접
+// 넣어두었습니다 (이 값은 비밀값이 아니라 그냥 공개 웹 주소라 코드에 있어도 안전합니다).
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://wedding1115.vercel.app";
+
 export const metadata: Metadata = {
-  // 카카오톡 등에서 공유 썸네일 이미지가 절대 URL로 뜨도록, 배포 후 실제 도메인을
-  // NEXT_PUBLIC_SITE_URL 환경변수로 설정해주세요 (예: https://your-wedding.vercel.app).
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+  metadataBase: new URL(SITE_URL),
   title: ogMeta.title,
   description: ogMeta.description,
   openGraph: {
