@@ -4,7 +4,6 @@ import "./globals.css";
 import { ogMeta, couple } from "@/data/wedding";
 import { ToastProvider } from "@/context/ToastContext";
 import GrainOverlay from "@/components/GrainOverlay";
-import BgmToggle from "@/components/BgmToggle";
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -53,7 +52,6 @@ export default function RootLayout({
         <ToastProvider>
           <div className="page-shell" aria-label={`${couple.groom.name} ${couple.bride.name} 결혼식 초대장`}>
             {children}
-            <BgmToggle />
           </div>
           <GrainOverlay />
         </ToastProvider>
