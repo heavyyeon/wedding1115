@@ -1,4 +1,42 @@
-@import "pretendard/dist/web/static/pretendard.css";
+/* -------------------- Pretendard (직접 호스팅) --------------------
+   public/fonts 안의 Pretendard 파일을 그대로 사용합니다. 한글 2,350자 + 영문/숫자가 들어있는
+   경량(서브셋) 버전이라 파일당 약 270KB이고, 브라우저는 화면에서 실제로 쓰이는 굵기 파일만
+   내려받습니다. 굵기: 300 라이트 / 400 기본 / 500 미디엄 / 600 세미볼드 / 700 볼드 */
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/Pretendard-Light.subset.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/Pretendard-Regular.subset.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/Pretendard-Medium.subset.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/Pretendard-SemiBold.subset.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("/fonts/Pretendard-Bold.subset.woff2") format("woff2");
+}
 
 @tailwind base;
 @tailwind components;
@@ -20,9 +58,24 @@ body {
   margin: 0;
   background-color: var(--color-base);
   color: #2b2b2b;
-  font-family: "Pretendard", sans-serif;
+  font-family: "Pretendard", -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
+}
+
+/* 예전에 세리프(Cormorant)·고정폭(Space Mono) 글꼴로 지정해둔 곳도 전부 Pretendard로 나오게
+   tailwind.config.ts 에서 맞춰두었습니다. 그 위에 굵기만 아래처럼 얹었어요:
+   - font-serif(섹션 제목: 오시는 길 / 마음을 전하실 곳 등)는 미디엄(500)으로 살짝 도톰하게
+   - font-mono(카운트다운·날짜 숫자)는 숫자 폭이 일정한 tabular-nums로 (숫자가 바뀔 때 흔들림 방지) */
+@layer base {
+  .font-serif {
+    font-weight: 500;
+  }
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
 }
 
 /* 모바일 우선: 전체 페이지를 480px 폭 카드로 고정하고 바깥은 배경색 */
