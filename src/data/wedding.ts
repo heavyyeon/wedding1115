@@ -71,7 +71,7 @@ export const accounts = {
     label: "신부측",
     people: [
       { name: "신부 아버지", holder: "김종화", bank: "우체국", number: "900977-02-028742" },
-      { name: "신부 어머니", holder: "구윤정", bank: "우리은행", number: "1002-953-858974" },
+      { name: "신부 어머니", holder: "구윤정", bank: "우리은행", number: "1002-953-717267" },
       { name: "신부", holder: "김수연", bank: "우리은행", number: "1002-753-858974" },
     ] as AccountEntry[],
   },
