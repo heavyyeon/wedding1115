@@ -90,7 +90,8 @@ export default function GuestBookSection() {
   };
 
   return (
-    <section className="px-6 py-20">
+    // 다른 섹션과 간격을 맞추기 위해 위/아래 여백을 py-10으로 했습니다.
+    <section className="px-6 py-10">
       <Reveal className="mb-8 text-center">
         <p className="font-serif text-xs tracking-[0.3em] text-neutral-400">GUEST BOOK</p>
         <p className="mt-2 font-serif text-lg text-neutral-700">축하의 마음을 남겨주세요</p>
@@ -107,7 +108,7 @@ export default function GuestBookSection() {
               onChange={(e) => setName(e.target.value)}
               placeholder="이름"
               maxLength={20}
-              className="w-1/2 rounded-md border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-accent"
+              className="w-1/2 rounded-md border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-rose-300"
             />
             <input
               value={password}
@@ -115,7 +116,7 @@ export default function GuestBookSection() {
               placeholder="비밀번호 (삭제용)"
               type="password"
               maxLength={20}
-              className="w-1/2 rounded-md border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-accent"
+              className="w-1/2 rounded-md border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-rose-300"
             />
           </div>
           <textarea
@@ -124,12 +125,12 @@ export default function GuestBookSection() {
             placeholder="축하 메시지를 남겨주세요"
             maxLength={300}
             rows={3}
-            className="resize-none rounded-md border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-accent"
+            className="resize-none rounded-md border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-rose-300"
           />
           <button
             type="submit"
             disabled={submitting}
-            className="mt-1 rounded-md bg-accent py-2.5 text-sm font-medium text-neutral-900 transition active:scale-[0.98] disabled:opacity-60"
+            className="mt-1 rounded-md bg-rose-300 py-2.5 text-sm font-medium text-white transition active:scale-[0.98] disabled:opacity-60"
           >
             {submitting ? "등록 중..." : "방명록 남기기"}
           </button>
@@ -189,7 +190,7 @@ export default function GuestBookSection() {
               type="password"
               value={deletePassword}
               onChange={(e) => setDeletePassword(e.target.value)}
-              className="mb-3 w-full rounded-md border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-accent"
+              className="mb-3 w-full rounded-md border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-rose-300"
             />
             <div className="flex gap-2">
               <button
