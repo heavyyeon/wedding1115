@@ -103,7 +103,8 @@ export default function GallerySection() {
   };
 
   return (
-    <section className="pb-20">
+    // 아래 여백을 절반으로 줄였습니다 (pb-20 → pb-10). 오시는 길과의 간격용.
+    <section className="pb-10">
       {/*
         CSS columns(masonry)는 사진을 세로로 먼저 쌓고 그다음 열로 넘어가는 방식이라
         1,2,3번이 화면상 순서와 어긋나 보이고, 사진 높이가 제각각이면 열 사이에 큰
