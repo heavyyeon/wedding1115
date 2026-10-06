@@ -12,10 +12,12 @@ const config: Config = {
         accent: "#a8d96c", // 강조 섹션 배경 (WhenWhere, Account)
         paper: "#ffffff", // 흰 배경 섹션 (Invitation)
       },
+      // 글씨체를 Pretendard 하나로 통일했습니다. 기존에 font-serif / font-mono 로 지정된 곳
+      // (섹션 제목, 숫자 등)도 모두 같은 Pretendard로 표시됩니다.
       fontFamily: {
-        sans: ["Pretendard", "sans-serif"],
-        serif: ["var(--font-cormorant)", "Cormorant Garamond", "serif"],
-        mono: ["var(--font-space-mono)", "Space Mono", "monospace"],
+        sans: ["Pretendard", "-apple-system", "Apple SD Gothic Neo", "Malgun Gothic", "sans-serif"],
+        serif: ["Pretendard", "-apple-system", "Apple SD Gothic Neo", "Malgun Gothic", "sans-serif"],
+        mono: ["Pretendard", "-apple-system", "Apple SD Gothic Neo", "Malgun Gothic", "sans-serif"],
       },
       maxWidth: {
         mobile: "480px",
