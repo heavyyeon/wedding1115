@@ -53,41 +53,68 @@ function AccountRow({ entry }: { entry: AccountEntry }) {
   );
 }
 
-function AccountGroup({ label, people }: { label: string; people: AccountEntry[] }) {
+// 토글 제목 줄(신랑측/신부측)에 입히는 색상입니다. 색을 바꾸고 싶으면 여기 클래스만 수정하세요.
+// (노란 배경 위에는 흰 글씨가 잘 안 보여서 노란색은 진한 글씨로 맞췄습니다.)
+const TONES = {
+  pink: {
+    header: "bg-rose-300 text-white",
+    arrow: "text-white/80",
+    border: "border-rose-200",
+  },
+  yellow: {
+    header: "bg-yellow-300 text-neutral-900",
+    arrow: "text-neutral-700",
+    border: "border-yellow-200",
+  },
+} as const;
+
+function AccountGroup({
+  label,
+  people,
+  tone,
+}: {
+  label: string;
+  people: AccountEntry[];
+  tone: keyof typeof TONES;
+}) {
   const [open, setOpen] = useState(false);
+  const t = TONES[tone];
 
   return (
-    <div className="rounded-xl border border-neutral-100 bg-white p-4 shadow-sm">
+    <div className={`overflow-hidden rounded-xl border bg-white shadow-sm ${t.border}`}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between text-sm font-medium text-neutral-800"
+        className={`flex w-full items-center justify-between px-4 py-3 text-sm font-medium ${t.header}`}
       >
         {label}
-        <span
-          className={`text-xs text-neutral-400 transition-transform ${open ? "rotate-180" : ""}`}
-        >
+        <span className={`text-xs transition-transform ${t.arrow} ${open ? "rotate-180" : ""}`}>
           ▾
         </span>
       </button>
 
-      {open && <div className="mt-1">{people.map((entry) => (
-        <AccountRow key={entry.name} entry={entry} />
-      ))}</div>}
+      {open && (
+        <div className="px-4 pb-1">
+          {people.map((entry) => (
+            <AccountRow key={entry.name} entry={entry} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 export default function AccountSection() {
   return (
-    <section className="bg-white px-6 py-20 text-neutral-900">
+    // 위쪽 여백(오시는 길과의 간격)은 절반으로 줄였고(pt-10), 아래쪽은 그대로입니다(pb-20).
+    <section className="bg-white px-6 pb-20 pt-10 text-neutral-900">
       <Reveal className="mb-8 text-center">
         <p className="font-serif text-lg">마음을 전하실 곳</p>
       </Reveal>
 
       <Reveal className="flex flex-col gap-3">
-        <AccountGroup label={accounts.groomSide.label} people={accounts.groomSide.people} />
-        <AccountGroup label={accounts.brideSide.label} people={accounts.brideSide.people} />
+        <AccountGroup label={accounts.groomSide.label} people={accounts.groomSide.people} tone="pink" />
+        <AccountGroup label={accounts.brideSide.label} people={accounts.brideSide.people} tone="yellow" />
       </Reveal>
     </section>
   );
