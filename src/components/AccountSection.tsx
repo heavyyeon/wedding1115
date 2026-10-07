@@ -20,20 +20,20 @@ function AccountRow({ entry }: { entry: AccountEntry }) {
   };
 
   return (
-    <div className="border-t border-neutral-100 py-4 first:border-t-0">
-      <p className="text-sm font-semibold text-neutral-800">{entry.name}</p>
+    <div className="border-t border-white/10 py-4 first:border-t-0">
+      <p className="text-sm font-semibold text-white">{entry.name}</p>
       <div className="mt-2 flex items-center justify-between gap-3">
         <div>
-          <p className="text-sm text-neutral-700">
+          <p className="text-sm text-white/90">
             {entry.bank} {entry.number}
           </p>
-          <p className="text-xs text-neutral-400">{entry.holder}</p>
+          <p className="text-xs text-white/50">{entry.holder}</p>
         </div>
         <div className="flex flex-shrink-0 items-center gap-1.5">
           <button
             type="button"
             onClick={copy}
-            className="rounded-md border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-700 active:scale-95"
+            className="rounded-md border border-white/30 px-3 py-1.5 text-xs font-medium text-white/90 active:scale-95"
           >
             복사
           </button>
@@ -54,17 +54,17 @@ function AccountRow({ entry }: { entry: AccountEntry }) {
 }
 
 // 토글 제목 줄(신랑측/신부측)에 입히는 색상입니다. 색을 바꾸고 싶으면 여기 클래스만 수정하세요.
-// (노란 배경 위에는 흰 글씨가 잘 안 보여서 노란색은 진한 글씨로 맞췄습니다.)
+// 바탕이 검정이라서 연핑크/흰색 제목 줄에는 진한 글씨를 맞췄습니다.
 const TONES = {
   pink: {
-    header: "bg-rose-300 text-white",
-    arrow: "text-white/80",
+    header: "bg-rose-200 text-neutral-900",
+    arrow: "text-neutral-700",
     border: "border-rose-200",
   },
-  yellow: {
-    header: "bg-yellow-300 text-neutral-900",
+  white: {
+    header: "bg-white text-neutral-900",
     arrow: "text-neutral-700",
-    border: "border-yellow-200",
+    border: "border-white",
   },
 } as const;
 
@@ -81,7 +81,7 @@ function AccountGroup({
   const t = TONES[tone];
 
   return (
-    <div className={`overflow-hidden rounded-xl border bg-white shadow-sm ${t.border}`}>
+    <div className={`overflow-hidden rounded-xl border bg-neutral-900 ${t.border}`}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
@@ -107,14 +107,15 @@ function AccountGroup({
 export default function AccountSection() {
   return (
     // 위쪽 여백(오시는 길과의 간격)은 절반으로 줄였고(pt-10), 아래쪽은 그대로입니다(pb-20).
-    <section className="bg-white px-6 pb-20 pt-10 text-neutral-900">
+    // 바탕은 검정(bg-black), 글씨는 흰색입니다.
+    <section className="bg-black px-6 pb-20 pt-10 text-white">
       <Reveal className="mb-8 text-center">
         <p className="font-serif text-lg">마음을 전하실 곳</p>
       </Reveal>
 
       <Reveal className="flex flex-col gap-3">
         <AccountGroup label={accounts.groomSide.label} people={accounts.groomSide.people} tone="pink" />
-        <AccountGroup label={accounts.brideSide.label} people={accounts.brideSide.people} tone="yellow" />
+        <AccountGroup label={accounts.brideSide.label} people={accounts.brideSide.people} tone="white" />
       </Reveal>
     </section>
   );
