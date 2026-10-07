@@ -100,6 +100,16 @@ export const directions = {
   parkingNotes: ["주차 3시간 무료", "공군호텔 건물내 무인정산기 이용"],
 };
 
+// 맨 아래 "카카오톡 공유하기 / 청첩장 주소 복사하기" 버튼이 쓰는 값입니다.
+export const share = {
+  // 복사·공유되는 청첩장 주소 (정식 주소)
+  siteUrl: "https://wedding1115.vercel.app",
+  // 카카오 디벨로퍼스(developers.kakao.com)에서 발급받은 "JavaScript 키"를 따옴표 사이에 넣으세요.
+  // 비워두면 카카오 전용 공유창 대신, 휴대폰의 기본 공유창(여기서 카카오톡 선택) →
+  // 그것도 안 되는 환경이면 주소 복사로 자동 전환됩니다. (공개용 키라 코드에 넣어도 안전합니다.)
+  kakaoJsKey: "4e7900fb624d0e6aea8295df307d1f6e",
+};
+
 // Kakao 공유(OG) 관련 텍스트. layout.tsx 의 메타데이터에서 사용됩니다.
 export const ogMeta = {
   title: `${couple.groom.name} ♥ ${couple.bride.name} 결혼합니다`,
