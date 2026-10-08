@@ -118,8 +118,10 @@ export const share = {
 
 // Kakao 공유(OG) 관련 텍스트. layout.tsx 의 메타데이터에서 사용됩니다.
 export const ogMeta = {
-  title: `${couple.groom.name} ♥ ${couple.bride.name} 결혼합니다`,
-  description: `${wedding.displayDate} | ${wedding.venueName}`,
+  // 카카오톡 공유 카드와 똑같은 문구를 씁니다 (위 share.kakaoCardTitle / kakaoCardDescription 한 곳에서 관리).
+  // 링크를 그냥 붙여넣어 보낼 때 나오는 미리보기, 브라우저 탭 제목도 이 문구로 나옵니다.
+  title: share.kakaoCardTitle,
+  description: share.kakaoCardDescription,
   imagePath: "/kakao.jpg",
 };
 
