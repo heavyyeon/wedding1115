@@ -111,10 +111,16 @@ export default function AccountSection() {
     <section className="bg-black px-6 pb-20 pt-20 text-white">
       <Reveal className="mb-8 text-center">
         <p className="font-serif text-lg">마음을 전하실 곳</p>
+        {/* 안내 문구: 가는 글씨(font-light). 문구를 바꾸려면 아래 세 줄만 수정하세요. */}
+        <div className="mt-5 flex flex-col gap-0.5 text-[13px] font-light leading-6 text-white/80">
+          <p>마음만으로도 충분히 감사하지만,</p>
+          <p>전하고 싶으신 분들을 위해 조심스레 안내드립니다.</p>
+          <p>보내주신 마음 잊지 않고 행복하게 살겠습니다.</p>
+        </div>
       </Reveal>
 
       <Reveal className="flex flex-col gap-3">
-        <AccountGroup label={accounts.groomSide.label} people={accounts.groomSide.people} tone="pink" />
+        <AccountGroup label={accounts.groomSide.label} people={accounts.groomSide.people} tone="white" />
         <AccountGroup label={accounts.brideSide.label} people={accounts.brideSide.people} tone="white" />
       </Reveal>
     </section>

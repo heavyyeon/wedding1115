@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 import { directions, wedding } from "@/data/wedding";
-import { naverMapSearchUrl, tmapSearchUrl } from "@/lib/navigation";
+import { naverMapSearchUrl } from "@/lib/navigation";
 import { useToast } from "@/context/ToastContext";
 import Reveal from "@/components/Reveal";
 
@@ -18,22 +18,6 @@ declare global {
     navermap_authFailure?: () => void;
   }
 }
-
-const navApps = [
-  {
-    key: "naver",
-    label: "네이버지도",
-    className: "bg-[#03c75a] text-white",
-    getHref: naverMapSearchUrl,
-    external: true, // 일반 웹 링크라 새 탭으로 엽니다.
-  },
-  {
-    key: "tmap",
-    label: "티맵",
-    className: "border border-neutral-200 bg-white text-neutral-800",
-    getHref: tmapSearchUrl,
-  },
-];
 
 export default function DirectionsSection() {
   const { showToast } = useToast();
@@ -164,17 +148,23 @@ export default function DirectionsSection() {
         </div>
 
         <div className="mt-4">
+          {/* 티맵 버튼을 없애고 그 자리에 "주소복사하기" 버튼을 옮겨왔습니다. */}
           <div className="grid grid-cols-2 gap-2">
-            {navApps.map((app) => (
-              <a
-                key={app.key}
-                href={app.getHref(directions.searchQuery)}
-                {...(app.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className={`rounded-md py-2.5 text-center text-xs font-medium transition active:scale-[0.98] ${app.className}`}
-              >
-                {app.label}
-              </a>
-            ))}
+            <a
+              href={naverMapSearchUrl(directions.searchQuery)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md bg-[#03c75a] py-2.5 text-center text-xs font-medium text-white transition active:scale-[0.98]"
+            >
+              네이버지도
+            </a>
+            <button
+              type="button"
+              onClick={copyAddress}
+              className="rounded-md border border-neutral-200 bg-white py-2.5 text-center text-xs font-medium text-neutral-800 transition active:scale-[0.98]"
+            >
+              주소복사하기
+            </button>
           </div>
         </div>
 
@@ -183,11 +173,7 @@ export default function DirectionsSection() {
             <p className="mb-2 text-sm font-semibold text-rose-300">지하철</p>
             <ul className="flex flex-col gap-1.5">
               {directions.subway.map((s, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm text-neutral-600">
-                  <span
-                    className="inline-block h-2.5 w-2.5 flex-shrink-0 rounded-full"
-                    style={{ backgroundColor: s.color }}
-                  />
+                <li key={i} className="text-sm text-neutral-600">
                   {s.line} {s.desc}
                 </li>
               ))}
@@ -201,16 +187,7 @@ export default function DirectionsSection() {
         <div className="rounded-xl bg-white/70 p-4 shadow-sm">
           <p className="mb-2 text-sm font-semibold text-rose-300">주차안내</p>
 
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-sm text-neutral-600">{directions.parkingAddress}</p>
-            <button
-              type="button"
-              onClick={copyAddress}
-              className="flex-shrink-0 rounded-md bg-rose-300 px-3 py-1.5 text-xs font-medium text-white active:scale-95"
-            >
-              복사하기
-            </button>
-          </div>
+          <p className="text-sm text-neutral-600">{directions.parkingAddress}</p>
 
           {directions.parkingNotes.length > 0 && (
             <ul className="mt-3 flex flex-col gap-1.5">
