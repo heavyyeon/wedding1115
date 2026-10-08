@@ -20,19 +20,18 @@ function formatDate(d: Date | null) {
 // 메모지가 벽에 붙여둔 것처럼 보이도록, 카드마다 아주 살짝씩 다르게 기울입니다.
 const TILTS = ["-rotate-1", "rotate-1", "-rotate-[0.5deg]", "rotate-[0.5deg]"];
 
-// 카드 폭(px)과 카드 사이 간격(px, gap-4 = 16).
-const CARD_W = 260;
-const CARD_GAP = 16;
-// 첫/마지막 카드가 화면 가운데에 오도록 목록 양끝에 넣는 빈 칸의 너비입니다.
-// (padding 의 % 는 바깥 상자 기준이라 어긋나서, 빈 칸 요소를 두는 방식으로 맞췄습니다.)
-const EDGE_SPACER = `calc(50% - ${CARD_W / 2 + CARD_GAP}px)`;
+// 카드 폭(px). 작게 줄여서 한 화면에 카드가 1~2장 넘기지 않아도 보이도록 했습니다.
+// 더 작게/크게 하려면 이 숫자만 바꾸세요 (예: 150 / 180).
+const CARD_W = 165;
+// 목록 왼쪽 끝에서 첫 카드까지의 여백(px) = 섹션 좌우 여백(px-6 = 24)과 같게 맞춤.
+const EDGE = 24;
 
 function HeartIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
         d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2Z"
-        stroke="#fb7185"
+        stroke="#fc547a"
         strokeWidth="1.6"
         strokeLinejoin="round"
       />
@@ -86,11 +85,18 @@ export default function GuestBookSection() {
   const onScroll = () => {
     const el = trackRef.current;
     if (!el) return;
-    const center = el.scrollLeft + el.clientWidth / 2;
+    const cards = Array.from(el.querySelectorAll<HTMLElement>("[data-card]"));
+    // 맨 오른쪽 끝까지 넘겼으면 마지막 카드로 봅니다.
+    if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 2) {
+      setCurrent(Math.max(0, cards.length - 1));
+      return;
+    }
+    // 그 외에는 "왼쪽 끝에 가장 가까운 카드"가 현재 번호입니다.
+    const left = el.scrollLeft + EDGE;
     let best = 0;
     let bestDist = Infinity;
-    Array.from(el.querySelectorAll<HTMLElement>("[data-card]")).forEach((c, i) => {
-      const dist = Math.abs(c.offsetLeft + c.offsetWidth / 2 - center);
+    cards.forEach((c, i) => {
+      const dist = Math.abs(c.offsetLeft - left);
       if (dist < bestDist) {
         bestDist = dist;
         best = i;
@@ -99,7 +105,7 @@ export default function GuestBookSection() {
     setCurrent(best);
   };
 
-  // 화살표 버튼(PC) / 번호 이동용: 해당 번호의 카드를 화면 가운데로 부드럽게 가져옵니다.
+  // 화살표 버튼(PC) / 번호 이동용: 해당 번호의 카드를 왼쪽 끝으로 부드럽게 가져옵니다.
   const goTo = (index: number) => {
     const el = trackRef.current;
     if (!el) return;
@@ -107,7 +113,7 @@ export default function GuestBookSection() {
     const card = el.querySelectorAll<HTMLElement>("[data-card]")[target];
     if (!card) return;
     el.scrollTo({
-      left: card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2,
+      left: card.offsetLeft - EDGE,
       behavior: "smooth",
     });
   };
@@ -159,10 +165,10 @@ export default function GuestBookSection() {
 
   return (
     // 다른 섹션과 간격을 맞추기 위해 위/아래 여백을 py-10으로 했습니다.
-    <section className="px-6 py-10">
+    <section className="bg-black px-6 py-10 text-white">
       <Reveal className="mb-6 text-center">
-        <p className="font-serif text-xs tracking-[0.3em] text-neutral-400">GUEST BOOK</p>
-        <p className="mt-2 font-serif text-lg text-neutral-700">축하의 마음을 남겨주세요</p>
+        <p className="font-serif text-xs tracking-[0.3em] text-white/50">GUEST BOOK</p>
+        <p className="mt-2 font-serif text-lg text-white">축하의 마음을 남겨주세요</p>
       </Reveal>
 
       {/* ── 메시지 남기기: 버튼을 누르면 입력창이 부드럽게 펼쳐집니다 ── */}
@@ -170,11 +176,11 @@ export default function GuestBookSection() {
         <button
           type="button"
           onClick={() => setFormOpen((v) => !v)}
-          className="mx-auto flex items-center gap-2 rounded-full border border-rose-300 px-6 py-2.5 text-sm text-rose-400 transition active:scale-95"
+          className="mx-auto flex items-center gap-2 rounded-full border border-point px-6 py-2.5 text-sm text-point transition active:scale-95"
         >
           {formOpen ? "닫기" : "축하 메시지 남기기"}
           <span
-            className={`inline-block h-2 w-2 border-b border-r border-rose-400 transition-transform ${
+            className={`inline-block h-2 w-2 border-b border-r border-point transition-transform ${
               formOpen ? "mt-1 -rotate-[135deg]" : "mb-1 rotate-45"
             }`}
           />
@@ -188,7 +194,7 @@ export default function GuestBookSection() {
           <div className="overflow-hidden">
             <form
               onSubmit={handleSubmit}
-              className="mt-4 flex flex-col gap-2 rounded-xl border border-rose-200 bg-rose-50 p-4"
+              className="mt-4 flex flex-col gap-2 rounded-xl border border-white/15 bg-neutral-900 p-4"
             >
               <div className="flex gap-2">
                 <input
@@ -196,7 +202,7 @@ export default function GuestBookSection() {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="이름"
                   maxLength={20}
-                  className="w-1/2 rounded-md border border-rose-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-300"
+                  className="w-1/2 rounded-md border border-white/15 bg-neutral-800 px-3 py-2 text-sm text-white outline-none placeholder:text-white/40 focus:border-point"
                 />
                 <input
                   value={password}
@@ -204,7 +210,7 @@ export default function GuestBookSection() {
                   placeholder="비밀번호 (삭제용)"
                   type="password"
                   maxLength={20}
-                  className="w-1/2 rounded-md border border-rose-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-300"
+                  className="w-1/2 rounded-md border border-white/15 bg-neutral-800 px-3 py-2 text-sm text-white outline-none placeholder:text-white/40 focus:border-point"
                 />
               </div>
               <textarea
@@ -213,12 +219,12 @@ export default function GuestBookSection() {
                 placeholder="축하 메시지를 남겨주세요"
                 maxLength={300}
                 rows={3}
-                className="resize-none rounded-md border border-rose-200 bg-white px-3 py-2 text-sm outline-none focus:border-rose-300"
+                className="resize-none rounded-md border border-white/15 bg-neutral-800 px-3 py-2 text-sm text-white outline-none placeholder:text-white/40 focus:border-point"
               />
               <button
                 type="submit"
                 disabled={submitting}
-                className="mt-1 rounded-md bg-rose-300 py-2.5 text-sm font-medium text-white transition active:scale-[0.98] disabled:opacity-60"
+                className="mt-1 rounded-md bg-point py-2.5 text-sm font-medium text-white transition active:scale-[0.98] disabled:opacity-60"
               >
                 {submitting ? "등록 중..." : "방명록 남기기"}
               </button>
@@ -228,10 +234,10 @@ export default function GuestBookSection() {
       </Reveal>
 
       {/* ── 메시지 목록: 메모지 카드를 옆으로 넘겨서 봅니다 ── */}
-      {loading && <p className="text-center text-sm text-neutral-400">불러오는 중...</p>}
+      {loading && <p className="text-center text-sm text-white/50">불러오는 중...</p>}
 
       {!loading && entries.length === 0 && (
-        <p className="rounded-xl border border-dashed border-rose-200 py-8 text-center text-sm font-light text-neutral-400">
+        <p className="rounded-xl border border-dashed border-white/20 py-8 text-center text-sm font-light text-white/50">
           아직 남겨진 메시지가 없어요.
           <br />첫 축하를 남겨보세요!
         </p>
@@ -243,50 +249,50 @@ export default function GuestBookSection() {
             ref={trackRef}
             onScroll={onScroll}
             // -mx-6: 섹션 좌우 여백을 뚫고 화면 끝까지 넓혀서, 옆 카드가 살짝 보이게 합니다.
-            className="relative -mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-5 pt-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="relative -mx-6 flex scroll-pl-6 snap-x snap-mandatory gap-3 overflow-x-auto pb-5 pt-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
-            <div aria-hidden="true" className="shrink-0" style={{ width: EDGE_SPACER }} />
+            <div aria-hidden="true" className="shrink-0" style={{ width: EDGE - 12 }} />
             {entries.map((entry, i) => (
               <div
                 key={entry.id}
                 data-card
-                className={`relative shrink-0 snap-center ${TILTS[i % TILTS.length]}`}
+                className={`relative shrink-0 snap-start ${TILTS[i % TILTS.length]}`}
                 style={{ width: CARD_W }}
               >
                 {/* 마스킹테이프 */}
-                <span className="absolute -top-2.5 left-1/2 z-10 h-5 w-16 -translate-x-1/2 -rotate-2 bg-rose-300/60" />
+                <span className="absolute -top-2.5 left-1/2 z-10 h-5 w-16 -translate-x-1/2 -rotate-2 bg-point/70" />
 
-                <div className="flex h-full min-h-[190px] flex-col rounded-sm bg-rose-100 px-5 pb-4 pt-6 shadow-[0_2px_10px_rgba(0,0,0,0.10)]">
+                <div className="flex h-full min-h-[190px] flex-col rounded-sm border border-white/10 bg-neutral-900 px-4 pb-3 pt-6 shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="flex items-center gap-1.5 text-sm font-medium text-neutral-800">
+                    <p className="flex min-w-0 items-center gap-1.5 break-all text-sm font-medium text-white">
                       <HeartIcon />
                       {entry.name}
                     </p>
                     {/* 우표 느낌의 날짜 */}
-                    <span className="border border-dashed border-rose-300 px-1.5 py-0.5 font-mono text-[10px] text-rose-400">
+                    <span className="border border-dashed border-point/70 px-1 py-0.5 shrink-0 font-mono text-[9px] text-point">
                       {formatDate(entry.createdAt)}
                     </span>
                   </div>
 
-                  <p className="mt-3 flex-1 whitespace-pre-line break-words text-[13px] font-light leading-6 text-neutral-700">
+                  <p className="mt-3 flex-1 whitespace-pre-line break-words text-[13px] font-light leading-6 text-white/80">
                     {entry.message}
                   </p>
 
                   <button
                     type="button"
                     onClick={() => setDeleteTargetId(entry.id)}
-                    className="mt-3 self-end text-[11px] text-neutral-400 underline"
+                    className="mt-3 self-end text-[11px] text-white/40 underline"
                   >
                     삭제
                   </button>
                 </div>
               </div>
             ))}
-            <div aria-hidden="true" className="shrink-0" style={{ width: EDGE_SPACER }} />
+            <div aria-hidden="true" className="shrink-0" style={{ width: EDGE - 12 }} />
           </div>
 
           {/* 몇 번째 메시지인지 + 좌우 이동 버튼(마우스 사용하는 PC에서도 넘길 수 있게) */}
-          <div className="flex items-center justify-center gap-5 text-neutral-500">
+          <div className="flex items-center justify-center gap-5 text-white/60">
             <button
               type="button"
               onClick={() => goTo(current - 1)}
@@ -329,7 +335,7 @@ export default function GuestBookSection() {
               type="password"
               value={deletePassword}
               onChange={(e) => setDeletePassword(e.target.value)}
-              className="mb-3 w-full rounded-md border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-rose-300"
+              className="mb-3 w-full rounded-md border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-point"
             />
             <div className="flex gap-2">
               <button

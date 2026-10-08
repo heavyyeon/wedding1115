@@ -34,7 +34,7 @@ export default function MonthCalendar({
             <th
               key={w}
               className={`pb-3 text-xs font-medium ${
-                i === 0 ? "text-rose-300" : "text-white/40"
+                i === 0 ? "text-point" : "text-white/40"
               }`}
             >
               {w}
@@ -54,9 +54,9 @@ export default function MonthCalendar({
                     <span
                       className={`mx-auto flex h-7 w-7 items-center justify-center rounded-full text-sm ${
                         isHighlight
-                          ? "bg-rose-300 font-semibold text-white"
+                          ? "bg-point font-semibold text-white"
                           : isSunday
-                          ? "text-rose-300"
+                          ? "text-point"
                           : "text-white/80"
                       }`}
                     >

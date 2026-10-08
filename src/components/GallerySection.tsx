@@ -41,7 +41,7 @@ function PhotoButton({
     <button
       type="button"
       onClick={() => onOpen(index)}
-      className="relative aspect-[3/4] overflow-hidden bg-white/50"
+      className="relative aspect-[3/4] overflow-hidden bg-neutral-900"
     >
       <Image
         src={src}
@@ -140,7 +140,7 @@ export default function GallerySection() {
 
   return (
     // 아래 여백을 절반으로 줄였습니다 (pb-20 → pb-10). 오시는 길과의 간격용.
-    <section className="pb-10">
+    <section className="bg-black pb-10">
       {/*
         CSS columns(masonry)는 사진을 세로로 먼저 쌓고 그다음 열로 넘어가는 방식이라
         1,2,3번이 화면상 순서와 어긋나 보이고, 사진 높이가 제각각이면 열 사이에 큰
@@ -165,10 +165,10 @@ export default function GallerySection() {
             ))}
           </div>
 
-          {/* 아래로 갈수록 흰색으로 흐려지는 그라데이션 (펼치면 서서히 사라집니다) */}
+          {/* 아래로 갈수록 검정으로 흐려지는 그라데이션 (펼치면 서서히 사라집니다) */}
           {canExpand && (
             <div
-              className={`pointer-events-none absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-white via-white/70 to-transparent transition-opacity duration-500 ${
+              className={`pointer-events-none absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-black via-black/70 to-transparent transition-opacity duration-500 ${
                 expanded ? "opacity-0" : "opacity-100"
               }`}
             />
@@ -180,10 +180,10 @@ export default function GallerySection() {
               <button
                 type="button"
                 onClick={() => setExpanded(true)}
-                className="flex items-center gap-2 rounded-full border border-neutral-400 bg-white px-6 py-2.5 text-sm text-neutral-700 shadow-sm transition active:scale-95 active:bg-neutral-100"
+                className="flex items-center gap-2 rounded-full border border-white bg-white px-6 py-2.5 text-sm font-medium text-neutral-900 shadow-sm transition active:scale-95 active:bg-neutral-200"
               >
                 사진 더 보기
-                <span className="mb-1 inline-block h-2 w-2 rotate-45 border-b border-r border-neutral-600" />
+                <span className="mb-1 inline-block h-2 w-2 rotate-45 border-b border-r border-neutral-900" />
               </button>
             </div>
           )}

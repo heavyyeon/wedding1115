@@ -57,9 +57,9 @@ function AccountRow({ entry }: { entry: AccountEntry }) {
 // 바탕이 검정이라서 연핑크/흰색 제목 줄에는 진한 글씨를 맞췄습니다.
 const TONES = {
   pink: {
-    header: "bg-rose-200 text-neutral-900",
+    header: "bg-point text-white",
     arrow: "text-neutral-700",
-    border: "border-rose-200",
+    border: "border-point",
   },
   white: {
     header: "bg-white text-neutral-900",

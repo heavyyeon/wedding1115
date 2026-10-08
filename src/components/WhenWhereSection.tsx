@@ -66,7 +66,7 @@ export default function WhenWhereSection() {
               <>
                 {pad2(countdown.days)} : {pad2(countdown.hours)} :{" "}
                 {pad2(countdown.minutes)} :{" "}
-                <span className="text-rose-300">{pad2(countdown.seconds)}</span>
+                <span className="text-point">{pad2(countdown.seconds)}</span>
               </>
             ) : (
               "-- : -- : -- : --"
