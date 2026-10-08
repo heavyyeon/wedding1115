@@ -58,6 +58,9 @@ export default function GuestBookSection() {
   // 옆으로 넘기는 메시지 카드 목록
   const trackRef = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
+  // 더 넘길 카드가 왼쪽/오른쪽에 남아 있는지. (화살표 버튼을 켜고 끄는 기준)
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(false);
 
   const refresh = async () => {
     setLoading(true);
@@ -81,13 +84,18 @@ export default function GuestBookSection() {
     setCurrent((c) => Math.min(c, Math.max(0, entries.length - 1)));
   }, [entries.length]);
 
-  // 스크롤 위치에서 "화면 가운데에 가장 가까운 카드"를 찾아 현재 번호로 삼습니다.
+  // 스크롤 위치를 보고 "현재 번호"와 "좌/우로 더 넘길 수 있는지"를 갱신합니다.
   const onScroll = () => {
     const el = trackRef.current;
     if (!el) return;
     const cards = Array.from(el.querySelectorAll<HTMLElement>("[data-card]"));
+    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2;
+
+    setCanPrev(el.scrollLeft > 2);
+    setCanNext(!atEnd);
+
     // 맨 오른쪽 끝까지 넘겼으면 마지막 카드로 봅니다.
-    if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 2) {
+    if (atEnd) {
       setCurrent(Math.max(0, cards.length - 1));
       return;
     }
@@ -105,17 +113,23 @@ export default function GuestBookSection() {
     setCurrent(best);
   };
 
-  // 화살표 버튼(PC) / 번호 이동용: 해당 번호의 카드를 왼쪽 끝으로 부드럽게 가져옵니다.
-  const goTo = (index: number) => {
+  // 카드가 불러와지거나 화면 크기가 바뀌면 화살표 상태를 다시 계산합니다.
+  useEffect(() => {
+    onScroll();
+    window.addEventListener("resize", onScroll);
+    return () => window.removeEventListener("resize", onScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entries.length, loading]);
+
+  // 화살표 버튼(PC·모바일 공통): 카드 한 장 너비만큼 좌/우로 부드럽게 넘깁니다.
+  // direction: -1 = 이전(왼쪽), 1 = 다음(오른쪽)
+  const slide = (direction: -1 | 1) => {
     const el = trackRef.current;
     if (!el) return;
-    const target = Math.max(0, Math.min(entries.length - 1, index));
-    const card = el.querySelectorAll<HTMLElement>("[data-card]")[target];
-    if (!card) return;
-    el.scrollTo({
-      left: card.offsetLeft - EDGE,
-      behavior: "smooth",
-    });
+    const cards = el.querySelectorAll<HTMLElement>("[data-card]");
+    const step =
+      cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : CARD_W + 12;
+    el.scrollBy({ left: direction * step, behavior: "smooth" });
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -291,26 +305,26 @@ export default function GuestBookSection() {
             <div aria-hidden="true" className="shrink-0" style={{ width: EDGE - 12 }} />
           </div>
 
-          {/* 몇 번째 메시지인지 + 좌우 이동 버튼(마우스 사용하는 PC에서도 넘길 수 있게) */}
-          <div className="flex items-center justify-center gap-5 text-white/60">
+          {/* 몇 번째 메시지인지 + 좌우 이동 버튼 (더 넘길 카드가 없는 쪽은 흐리게 비활성) */}
+          <div className="flex items-center justify-center gap-4 text-white">
             <button
               type="button"
-              onClick={() => goTo(current - 1)}
-              disabled={current === 0}
+              onClick={() => slide(-1)}
+              disabled={!canPrev}
               aria-label="이전 메시지"
-              className="flex h-9 w-9 items-center justify-center text-2xl transition active:scale-90 disabled:opacity-25"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/40 text-xl leading-none transition active:scale-90 disabled:opacity-25"
             >
               ‹
             </button>
-            <span className="font-mono text-xs tracking-widest">
+            <span className="min-w-[56px] text-center font-mono text-xs tracking-widest text-white/70">
               {current + 1} / {entries.length}
             </span>
             <button
               type="button"
-              onClick={() => goTo(current + 1)}
-              disabled={current >= entries.length - 1}
+              onClick={() => slide(1)}
+              disabled={!canNext}
               aria-label="다음 메시지"
-              className="flex h-9 w-9 items-center justify-center text-2xl transition active:scale-90 disabled:opacity-25"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white/40 text-xl leading-none transition active:scale-90 disabled:opacity-25"
             >
               ›
             </button>
