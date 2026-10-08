@@ -127,6 +127,10 @@ export const ogMeta = {
 
 export const gallery = {
   count: 15,
+  // 처음 화면에 보여줄 사진 "줄 수"입니다 (한 줄 = 사진 3장). 소수도 가능해요:
+  // 1.5 = 한 줄 반(두 번째 줄 중간까지), 2 = 두 줄, 2.5 = 두 줄 반. 나머지는 흐려졌다가
+  // "사진 더 보기"를 누르면 전체가 펼쳐집니다.
+  previewRows: 1.5,
   basePath: "/gallery",
   extension: "png",
 };
