@@ -134,7 +134,7 @@ export default function DirectionsSection() {
     // 위/아래 여백을 각각 절반으로 줄였습니다 (py-20 → py-10). 갤러리·마음을 전하실 곳과의 간격용.
     <section className="px-6 py-10">
       <Script
-        src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${directions.naverMapClientId}&submodules=geocoder`}
+        src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${directions.naverMapClientId}&submodules=geocoder`}
         strategy="afterInteractive"
         onReady={() => setSdkReady(true)}
         onError={(e) => {
