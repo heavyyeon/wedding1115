@@ -4,28 +4,36 @@ import { useState } from "react";
 import Image from "next/image";
 import { couple } from "@/data/wedding";
 
-// 문구 없이 메인 사진 한 장만 보여주는 첫 화면입니다.
-// 이름/문구가 필요하면 /public/main-photo.png 자체에 디자인해서 넣어주세요.
-//
-// 예전에는 화면 높이(세로)에 꽉 채우고 object-cover로 잘라내는 방식이라, 사진의 가로세로
-// 비율이 화면 비율과 다르면 사진 위/아래가 잘려서 보이는 문제가 있었습니다. 지금은 반대로
-// 사진이 실제로 로드된 뒤 그 사진의 원본 가로:세로 비율을 측정해서, 화면 영역 자체를
-// 그 비율에 맞게 만듭니다. 그래서 사진이 잘리지 않고 항상 처음부터 끝까지 전부 보입니다.
-export default function TitleCard() {
-  // 사진이 아직 로드되기 전에는 흔한 세로 사진 비율(4:5)을 기본값으로 잠깐 보여주고,
-  // 로드가 끝나면 실제 비율로 바꿔줍니다.
+// 첫 화면에 위→아래로 이어 붙여 보여줄 사진 목록입니다 (public 폴더 안의 파일 이름).
+// 사진을 더 붙이고 싶으면 아래 목록에 파일 이름을 한 줄 추가하면 됩니다.
+// 이름/문구가 필요하면 사진 파일 자체에 디자인해서 넣어주세요.
+const PHOTOS = ["/main-photo.png", "/main-photo-2.png"];
+
+// 사진이 로드된 뒤 그 사진의 원본 가로:세로 비율을 측정해서, 사진 영역을 그 비율에 맞춥니다.
+// 그래서 사진이 잘리지 않고 처음부터 끝까지 전부 보이고, 사진끼리 사이에 틈 없이 이어집니다.
+function StackedPhoto({
+  src,
+  alt,
+  priority,
+}: {
+  src: string;
+  alt: string;
+  priority?: boolean;
+}) {
+  // 로드되기 전에는 흔한 세로 사진 비율(4:5)을 임시로 쓰고, 로드가 끝나면 실제 비율로 바꿉니다.
   const [ratio, setRatio] = useState(4 / 5);
+  // 파일이 아직 올라가 있지 않아서 불러오지 못하면, 깨진 이미지 대신 이 칸을 통째로 숨깁니다.
+  const [failed, setFailed] = useState(false);
+
+  if (failed) return null;
 
   return (
-    <section
-      className="relative w-full overflow-hidden"
-      style={{ aspectRatio: ratio }}
-    >
+    <div className="relative w-full overflow-hidden" style={{ aspectRatio: ratio }}>
       <Image
-        src="/main-photo.png"
-        alt={`${couple.groom.name}, ${couple.bride.name}`}
+        src={src}
+        alt={alt}
         fill
-        priority
+        priority={priority}
         sizes="480px"
         className="object-cover"
         onLoad={(e) => {
@@ -34,7 +42,19 @@ export default function TitleCard() {
             setRatio(img.naturalWidth / img.naturalHeight);
           }
         }}
+        onError={() => setFailed(true)}
       />
+    </div>
+  );
+}
+
+export default function TitleCard() {
+  const alt = `${couple.groom.name}, ${couple.bride.name}`;
+  return (
+    <section className="flex w-full flex-col">
+      {PHOTOS.map((src, i) => (
+        <StackedPhoto key={src} src={src} alt={alt} priority={i === 0} />
+      ))}
     </section>
   );
 }
