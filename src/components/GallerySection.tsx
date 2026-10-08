@@ -20,8 +20,44 @@ const photos = Array.from(
   (_, i) => `${gallery.basePath}/${i + 1}.${gallery.extension}`
 );
 
+// 한 줄에 3장, 사진 칸 비율이 3:4 이므로 "한 줄 높이 = 가로폭의 4/9" 입니다.
+// 아래 두 값은 가로폭 대비 % 로 높이를 정하는 데 쓰입니다 (padding-bottom %는 가로폭 기준).
+const ROW_PERCENT = (4 / 9) * 100;
+const totalRows = Math.ceil(photos.length / 3);
+const collapsedPercent = Math.min(gallery.previewRows, totalRows) * ROW_PERCENT;
+const expandedPercent = totalRows * ROW_PERCENT;
+const canExpand = collapsedPercent < expandedPercent;
+
+function PhotoButton({
+  src,
+  index,
+  onOpen,
+}: {
+  src: string;
+  index: number;
+  onOpen: (i: number) => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(index)}
+      className="relative aspect-[3/4] overflow-hidden bg-white/50"
+    >
+      <Image
+        src={src}
+        alt={`갤러리 사진 ${index + 1}`}
+        fill
+        sizes="160px"
+        className="object-cover transition duration-300 active:scale-95"
+      />
+    </button>
+  );
+}
+
 export default function GallerySection() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  // 처음에는 gallery.previewRows 줄 만큼만 보여주고(아래쪽은 흐려짐), "더 보기"를 누르면 전체가 펼쳐집니다.
+  const [expanded, setExpanded] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
   // 드래그/슬라이드 애니메이션에 쓰는 값들
@@ -112,23 +148,46 @@ export default function GallerySection() {
         빈 공간도 생기지 않는 grid(고정 칸) 방식으로 되돌리고, 대신 칸을 세로로 더
         길게(aspect-[3/4]) 잡아 사진이 작아 보이지 않도록 했습니다.
       */}
-      <Reveal className="grid grid-cols-3 gap-0">
-        {photos.map((src, i) => (
-          <button
-            key={src}
-            type="button"
-            onClick={() => setActiveIndex(i)}
-            className="relative aspect-[3/4] overflow-hidden bg-white/50"
-          >
-            <Image
-              src={src}
-              alt={`갤러리 사진 ${i + 1}`}
-              fill
-              sizes="160px"
-              className="object-cover transition duration-300 active:scale-95"
+      {/*
+        사진 전체를 하나의 격자로 두고, 바깥 상자의 높이만 줄여서 "앞쪽 일부만" 보이게 합니다.
+        (padding-bottom % = 가로폭 기준 높이 → 줄 수를 소수(1.5줄)로도 정할 수 있고, 높이가
+        바뀔 때 부드럽게 펼쳐지는 애니메이션도 가능합니다.) 접혀 있는 동안 잘려 보이지 않는
+        아랫부분의 사진은 아직 내려받지 않아 데이터도 절약됩니다.
+      */}
+      <Reveal>
+        <div
+          className="relative overflow-hidden transition-[padding-bottom] duration-700 ease-in-out"
+          style={{ paddingBottom: `${expanded || !canExpand ? expandedPercent : collapsedPercent}%` }}
+        >
+          <div className="absolute inset-x-0 top-0 grid grid-cols-3 gap-0">
+            {photos.map((src, i) => (
+              <PhotoButton key={src} src={src} index={i} onOpen={setActiveIndex} />
+            ))}
+          </div>
+
+          {/* 아래로 갈수록 흰색으로 흐려지는 그라데이션 (펼치면 서서히 사라집니다) */}
+          {canExpand && (
+            <div
+              className={`pointer-events-none absolute inset-x-0 bottom-0 h-[50%] bg-gradient-to-t from-white via-white/70 to-transparent transition-opacity duration-500 ${
+                expanded ? "opacity-0" : "opacity-100"
+              }`}
             />
-          </button>
-        ))}
+          )}
+
+          {/* 더 보기 버튼: 흐려진 사진 위, 맨 아래 가운데에 알약 모양으로 올려둡니다. */}
+          {canExpand && !expanded && (
+            <div className="absolute inset-x-0 bottom-4 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setExpanded(true)}
+                className="flex items-center gap-2 rounded-full border border-neutral-400 bg-white px-6 py-2.5 text-sm text-neutral-700 shadow-sm transition active:scale-95 active:bg-neutral-100"
+              >
+                사진 더 보기
+                <span className="mb-1 inline-block h-2 w-2 rotate-45 border-b border-r border-neutral-600" />
+              </button>
+            </div>
+          )}
+        </div>
       </Reveal>
 
       {activeIndex !== null && (
