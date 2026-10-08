@@ -108,6 +108,12 @@ export const share = {
   // 비워두면 카카오 전용 공유창 대신, 휴대폰의 기본 공유창(여기서 카카오톡 선택) →
   // 그것도 안 되는 환경이면 주소 복사로 자동 전환됩니다. (공개용 키라 코드에 넣어도 안전합니다.)
   kakaoJsKey: "4e7900fb624d0e6aea8295df307d1f6e",
+
+  // "카카오톡 공유하기"를 눌렀을 때 친구에게 가는 메시지 카드의 문구입니다.
+  // (이미지는 아래 ogMeta.imagePath 의 사진을 그대로 씁니다.)
+  kakaoCardTitle: "진우♥수연 결혼합니다",
+  kakaoCardDescription: "26년11월15일(일) 12시20분 | 공군호텔 3층 그랜드볼룸홀",
+  kakaoCardButton: "모바일청첩장",
 };
 
 // Kakao 공유(OG) 관련 텍스트. layout.tsx 의 메타데이터에서 사용됩니다.
