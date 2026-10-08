@@ -88,7 +88,7 @@ export default function ShareButtons() {
   };
 
   return (
-    <section className="bg-black px-6 pb-6 pt-4">
+    <section className="bg-black px-6 pb-12 pt-4">
       {share.kakaoJsKey && (
         <Script
           src="https://t1.kakaocdn.net/kakao_js_sdk/2.8.3/kakao.min.js"

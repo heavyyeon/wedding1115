@@ -106,9 +106,9 @@ function AccountGroup({
 
 export default function AccountSection() {
   return (
-    // 위쪽 여백(오시는 길과의 간격)은 절반으로 줄였고(pt-10), 아래쪽은 그대로입니다(pb-20).
+    // 위쪽 여백(오시는 길과의 간격)은 원래대로 되돌렸습니다(pt-20). 아래쪽도 pb-20 입니다.
     // 바탕은 검정(bg-black), 글씨는 흰색입니다.
-    <section className="bg-black px-6 pb-20 pt-10 text-white">
+    <section className="bg-black px-6 pb-20 pt-20 text-white">
       <Reveal className="mb-8 text-center">
         <p className="font-serif text-lg">마음을 전하실 곳</p>
       </Reveal>
