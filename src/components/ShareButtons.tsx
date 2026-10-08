@@ -41,11 +41,6 @@ async function copyText(text: string): Promise<boolean> {
 export default function ShareButtons() {
   const { showToast } = useToast();
 
-  const onCopy = async () => {
-    const ok = await copyText(share.siteUrl);
-    showToast(ok ? "청첩장 주소가 복사되었어요" : "복사에 실패했어요");
-  };
-
   // 공유 순서: ① 카카오 JavaScript 키가 있으면 카카오톡 전용 공유창
   //           ② 없거나 실패하면 휴대폰 기본 공유창(navigator.share) — 여기서 카카오톡 선택 가능
   //           ③ 그것도 안 되는 환경(PC 등)이면 주소를 복사해서 붙여넣도록 안내
@@ -93,7 +88,7 @@ export default function ShareButtons() {
   };
 
   return (
-    <section className="bg-white px-6 pb-6 pt-12">
+    <section className="bg-black px-6 pb-6 pt-4">
       {share.kakaoJsKey && (
         <Script
           src="https://t1.kakaocdn.net/kakao_js_sdk/2.8.3/kakao.min.js"
@@ -122,13 +117,6 @@ export default function ShareButtons() {
           className="h-14 w-full rounded-xl bg-[#FEE500] text-base font-medium text-neutral-900 transition active:scale-[0.98]"
         >
           카카오톡 공유하기
-        </button>
-        <button
-          type="button"
-          onClick={onCopy}
-          className="h-14 w-full rounded-xl bg-neutral-900 text-base font-medium text-white transition active:scale-[0.98]"
-        >
-          청첩장 주소 복사하기
         </button>
       </Reveal>
     </section>
