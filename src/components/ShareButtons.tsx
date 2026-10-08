@@ -53,8 +53,20 @@ export default function ShareButtons() {
     const Kakao = window.Kakao;
     if (share.kakaoJsKey && Kakao?.isInitialized?.()) {
       try {
-        // 청첩장 주소의 미리보기(제목·설명·썸네일)를 그대로 카톡 메시지로 보냅니다.
-        Kakao.Share.sendScrap({ requestUrl: share.siteUrl });
+        // 카카오 "피드" 메시지: 제목·설명·사진·버튼 글자를 wedding.ts 의 문구로 직접 지정합니다.
+        const link = { mobileWebUrl: share.siteUrl, webUrl: share.siteUrl };
+        Kakao.Share.sendDefault({
+          objectType: "feed",
+          content: {
+            title: share.kakaoCardTitle,
+            description: share.kakaoCardDescription,
+            imageUrl: `${share.siteUrl}${ogMeta.imagePath}`,
+            imageWidth: 1200,
+            imageHeight: 630,
+            link,
+          },
+          buttons: [{ title: share.kakaoCardButton, link }],
+        });
         return;
       } catch (e) {
         // eslint-disable-next-line no-console
@@ -65,8 +77,8 @@ export default function ShareButtons() {
     if (typeof navigator.share === "function") {
       try {
         await navigator.share({
-          title: ogMeta.title,
-          text: ogMeta.description,
+          title: share.kakaoCardTitle,
+          text: share.kakaoCardDescription,
           url: share.siteUrl,
         });
         return;
