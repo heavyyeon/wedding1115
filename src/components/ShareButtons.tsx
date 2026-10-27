@@ -38,7 +38,8 @@ async function copyText(text: string): Promise<boolean> {
   }
 }
 
-export default function ShareButtons() {
+// url: 공유할 주소. 안 넘기면 정식 주소(계좌 있는 버전)를 공유합니다.
+export default function ShareButtons({ url = share.siteUrl }: { url?: string }) {
   const { showToast } = useToast();
 
   // 공유 순서: ① 카카오 JavaScript 키가 있으면 카카오톡 전용 공유창
@@ -49,7 +50,7 @@ export default function ShareButtons() {
     if (share.kakaoJsKey && Kakao?.isInitialized?.()) {
       try {
         // 카카오 "피드" 메시지: 제목·설명·사진·버튼 글자를 wedding.ts 의 문구로 직접 지정합니다.
-        const link = { mobileWebUrl: share.siteUrl, webUrl: share.siteUrl };
+        const link = { mobileWebUrl: url, webUrl: url };
         Kakao.Share.sendDefault({
           objectType: "feed",
           content: {
@@ -74,7 +75,7 @@ export default function ShareButtons() {
         await navigator.share({
           title: share.kakaoCardTitle,
           text: share.kakaoCardDescription,
-          url: share.siteUrl,
+          url,
         });
         return;
       } catch (e) {
@@ -83,7 +84,7 @@ export default function ShareButtons() {
       }
     }
 
-    const ok = await copyText(share.siteUrl);
+    const ok = await copyText(url);
     showToast(ok ? "주소를 복사했어요. 카톡에 붙여넣어 주세요" : "공유에 실패했어요");
   };
 

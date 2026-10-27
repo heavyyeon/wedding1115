@@ -117,6 +117,18 @@ export const share = {
 };
 
 // Kakao 공유(OG) 관련 텍스트. layout.tsx 의 메타데이터에서 사용됩니다.
+// 계좌 없는 버전(/invite) 맨 아래에 계좌 칸 대신 들어가는 마무리 인사입니다.
+// 줄을 나누고 싶은 곳마다 배열에 한 줄씩 넣으면 됩니다.
+export const closingText = [
+  "함께해 주시는 마음만으로도",
+  "저희에게는 큰 선물입니다.",
+  "축하해 주시는 따뜻한 마음 잊지 않고",
+  "서로 아끼며 행복하게 살겠습니다.",
+];
+
+// 계좌 없는 버전의 주소입니다. 이 페이지의 카카오톡 공유 버튼은 이 주소를 공유합니다.
+export const inviteOnlyUrl = `${share.siteUrl}/invite`;
+
 export const ogMeta = {
   // 카카오톡 공유 카드와 똑같은 문구를 씁니다 (위 share.kakaoCardTitle / kakaoCardDescription 한 곳에서 관리).
   // 링크를 그냥 붙여넣어 보낼 때 나오는 미리보기, 브라우저 탭 제목도 이 문구로 나옵니다.
