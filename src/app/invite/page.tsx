@@ -14,7 +14,7 @@ export default function InvitePage() {
   return (
     <>
       <TitleCard />
-      <WhenWhereSection />
+      <WhenWhereSection showDaysRemaining={false} />
       <GallerySection />
       <GuestBookSection />
       <DirectionsSection />
