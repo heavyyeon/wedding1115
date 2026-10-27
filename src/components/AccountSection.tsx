@@ -21,14 +21,15 @@ function AccountRow({ entry }: { entry: AccountEntry }) {
 
   return (
     <div className="border-t border-white/10 py-4 first:border-t-0">
-      <p className="text-sm font-semibold text-white">{entry.name}</p>
+      {/* 관계와 예금주 이름을 한 줄에: "아버지  김동규" */}
+      <p className="text-sm text-white">
+        <span className="text-white/60">{entry.name}</span>
+        <span className="ml-2 font-semibold">{entry.holder}</span>
+      </p>
       <div className="mt-2 flex items-center justify-between gap-3">
-        <div>
-          <p className="text-sm text-white/90">
-            {entry.bank} {entry.number}
-          </p>
-          <p className="text-xs text-white/50">{entry.holder}</p>
-        </div>
+        <p className="text-sm text-white/90">
+          {entry.bank} {entry.number}
+        </p>
         <div className="flex flex-shrink-0 items-center gap-1.5">
           <button
             type="button"
@@ -96,7 +97,7 @@ function AccountGroup({
       {open && (
         <div className="px-4 pb-1">
           {people.map((entry) => (
-            <AccountRow key={entry.name} entry={entry} />
+            <AccountRow key={entry.number} entry={entry} />
           ))}
         </div>
       )}

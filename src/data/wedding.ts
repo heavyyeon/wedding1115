@@ -47,7 +47,7 @@ export const invitationText = `서로 다른 길을 걸어온 두 사람이
 따뜻한 마음으로 축복해 주시면 감사하겠습니다.`;
 
 export type AccountEntry = {
-  name: string; // 카드 제목 (예: "신랑", "신랑 아버지")
+  name: string; // 관계 (예: "신랑", "아버지") — 화면에 "아버지  김동규"처럼 이름과 한 줄로 표시
   holder: string; // 예금주 이름
   bank: string; // 은행명
   number: string; // 계좌번호
@@ -62,16 +62,16 @@ export const accounts = {
   groomSide: {
     label: "신랑측",
     people: [
-      { name: "신랑 아버지", holder: "김동규", bank: "국민은행", number: "524925-01-006957" },
-      { name: "신랑 어머니", holder: "홍선화", bank: "국민은행", number: "524902-01-296360" },
+      { name: "아버지", holder: "김동규", bank: "국민은행", number: "524925-01-006957" },
+      { name: "어머니", holder: "홍선화", bank: "국민은행", number: "524902-01-296360" },
       { name: "신랑", holder: "김진우", bank: "국민은행", number: "524902-01-383604" },
     ] as AccountEntry[],
   },
   brideSide: {
     label: "신부측",
     people: [
-      { name: "신부 아버지", holder: "김종화", bank: "우체국", number: "900977-02-028742" },
-      { name: "신부 어머니", holder: "구윤정", bank: "우리은행", number: "1002-753-858974" },
+      { name: "아버지", holder: "김종화", bank: "우체국", number: "900977-02-028742" },
+      { name: "어머니", holder: "구윤정", bank: "우리은행", number: "1002-753-858974" },
       { name: "신부", holder: "김수연", bank: "우리은행", number: "1002-957-717267" },
     ] as AccountEntry[],
   },
