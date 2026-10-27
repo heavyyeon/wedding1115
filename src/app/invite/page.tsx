@@ -1,5 +1,4 @@
 import TitleCard from "@/components/TitleCard";
-import WhenWhereSection from "@/components/WhenWhereSection";
 import GallerySection from "@/components/GallerySection";
 import GuestBookSection from "@/components/GuestBookSection";
 import DirectionsSection from "@/components/DirectionsSection";
@@ -14,7 +13,6 @@ export default function InvitePage() {
   return (
     <>
       <TitleCard />
-      <WhenWhereSection showDaysRemaining={false} />
       <GallerySection />
       <GuestBookSection />
       <DirectionsSection />

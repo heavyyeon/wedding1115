@@ -20,8 +20,7 @@ function daysRemainingLabel(daysRemaining: number) {
   return `${Math.abs(daysRemaining)}일 지났습니다`;
 }
 
-// showDaysRemaining: 맨 아래 "OO의 결혼식이 N일 남았습니다." 문장을 보일지 여부 (기본: 보임)
-export default function WhenWhereSection({ showDaysRemaining = true }: { showDaysRemaining?: boolean }) {
+export default function WhenWhereSection() {
   // 서버/클라이언트 시간 불일치로 인한 hydration mismatch를 피하기 위해
   // 실제 값은 클라이언트에서 useEffect로만 채웁니다.
   const [now, setNow] = useState<Date | null>(null);
@@ -75,12 +74,10 @@ export default function WhenWhereSection({ showDaysRemaining = true }: { showDay
           </p>
         </div>
 
-        {showDaysRemaining && (
-          <p className="text-sm text-white/70">
-            {couple.groom.name}, {couple.bride.name}의 결혼식이{" "}
-            {daysRemaining !== null ? daysRemainingLabel(daysRemaining) : ""}.
-          </p>
-        )}
+        <p className="text-sm text-white/70">
+          {couple.groom.name}, {couple.bride.name}의 결혼식이{" "}
+          {daysRemaining !== null ? daysRemainingLabel(daysRemaining) : ""}.
+        </p>
       </Reveal>
     </section>
   );
